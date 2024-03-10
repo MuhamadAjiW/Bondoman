@@ -3,10 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ui.login.LoginActivity">
+
+    <TextView
+        android:id="@+id/loginTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Masuk"
+        android:layout_marginBottom="24dp"
+        android:textSize="14pt"
+        android:fontFamily="sans-serif-medium"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toTopOf="@+id/loginCluster"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/loginCluster"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -15,24 +30,46 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/emailTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="Email"
+            android:textSize="10pt"
+            android:textColor="@color/black"/>
 
         <EditText
-            android:id="@+id/editTextText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/emailLabel"
+            android:layout_width="match_parent"
+            android:layout_height="16pt"
             android:ems="10"
             android:inputType="text"
-            android:text="Name" />
+            android:background="@color/gray"/>
 
-        <Button
-            android:id="@+id/button"
+
+        <TextView
+            android:id="@+id/passwordLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Password"
+            android:textSize="10pt"
+            android:textColor="@color/black"
+            android:layout_marginTop="5pt"/>
+
+        <EditText
+            android:id="@+id/passwordInput"
+            android:layout_width="match_parent"
+            android:layout_height="16pt"
+            android:ems="10"
+            android:inputType="text"
+            android:background="@color/gray"/>
+
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Masuk"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10pt"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
