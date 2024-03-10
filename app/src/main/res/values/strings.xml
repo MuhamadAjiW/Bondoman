@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">BondoMan</string>
+
+    <string name="hub_btm_nav_transaction">Transaction</string>
+    <string name="hub_btm_nav_scan">Scan</string>
+    <string name="hub_btm_nav_stats">Stats</string>
+    <string name="hub_btm_nav_settings">Settings</string>
+
 </resources>
