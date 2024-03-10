@@ -6,14 +6,19 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.bondoman.R
+import com.example.bondoman.databinding.ActivityHubBinding
+import com.example.bondoman.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityLoginBinding
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
-        setContentView(R.layout.activity_login)
 
-        val loginButton = findViewById<Button>(R.id.loginButton)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        val loginButton = binding.loginButton
         loginButton.setOnClickListener(::onLoginClick)
     }
 
