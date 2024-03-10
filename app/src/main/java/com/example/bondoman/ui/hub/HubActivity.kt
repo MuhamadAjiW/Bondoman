@@ -1,4 +1,4 @@
-package com.example.bondoman.activity
+package com.example.bondoman.ui.hub
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

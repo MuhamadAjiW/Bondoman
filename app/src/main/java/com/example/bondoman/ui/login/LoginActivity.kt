@@ -1,12 +1,10 @@
-package com.example.bondoman.activity
+package com.example.bondoman.ui.login
 
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
-import com.example.bondoman.R
-import com.example.bondoman.databinding.ActivityHubBinding
+import com.example.bondoman.ui.hub.HubActivity
 import com.example.bondoman.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {

@@ -1,14 +1,14 @@
-package com.example.bondoman.ui.stats
+package com.example.bondoman.ui.hub.scan
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.bondoman.databinding.FragmentStatsBinding
+import com.example.bondoman.databinding.FragmentScanBinding
 
-class StatsFragment : Fragment() {
-    private var _binding: FragmentStatsBinding? = null
+class ScanFragment : Fragment() {
+    private var _binding: FragmentScanBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -16,7 +16,7 @@ class StatsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentStatsBinding.inflate(inflater, container, false)
+        _binding = FragmentScanBinding.inflate(inflater, container, false)
         return binding.root
     }
 }

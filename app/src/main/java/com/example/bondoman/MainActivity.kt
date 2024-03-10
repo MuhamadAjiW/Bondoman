@@ -3,8 +3,8 @@ package com.example.bondoman
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.bondoman.activity.HubActivity
-import com.example.bondoman.activity.LoginActivity
+import com.example.bondoman.ui.hub.HubActivity
+import com.example.bondoman.ui.login.LoginActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?){

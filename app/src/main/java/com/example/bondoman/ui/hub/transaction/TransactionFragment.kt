@@ -1,14 +1,14 @@
-package com.example.bondoman.ui.settings
+package com.example.bondoman.ui.hub.transaction
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.bondoman.databinding.FragmentSettingsBinding
+import com.example.bondoman.databinding.FragmentTransactionBinding
 
-class SettingsFragment : Fragment() {
-    private var _binding: FragmentSettingsBinding? = null
+class TransactionFragment : Fragment() {
+    private var _binding: FragmentTransactionBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -16,7 +16,7 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        _binding = FragmentTransactionBinding.inflate(inflater, container, false)
         return binding.root
     }
 }
