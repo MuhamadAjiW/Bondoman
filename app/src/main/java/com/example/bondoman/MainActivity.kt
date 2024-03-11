@@ -6,6 +6,17 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.bondoman.ui.hub.HubActivity
 import com.example.bondoman.ui.login.LoginActivity
 
+//val transactionRepository = TransactionRepository(AppDatabase.getInstance(this).transactionDao())
+//val sampleTransaction = Transaction(
+//    id = 0, // Room will auto-generate this ID
+//    title = "Sample Transaction",
+//    category = Transaction.CATEGORY_EXPENSES,
+//    amount = 100,
+//    location = "Sample Location",
+//    timestamp = "2024-03-11 12:00:00"
+//)
+//transactionRepository.insert(sampleTransaction)
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
