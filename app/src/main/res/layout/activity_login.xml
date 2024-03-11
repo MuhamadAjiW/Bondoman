@@ -7,20 +7,20 @@
     tools:context=".ui.login.LoginActivity">
 
     <TextView
-        android:id="@+id/loginTitle"
+        android:id="@+id/login_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Masuk"
+        android:text="@string/login_label_enter"
         android:layout_marginBottom="24dp"
         android:textSize="14pt"
         android:fontFamily="sans-serif-medium"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toTopOf="@+id/loginCluster"
+        app:layout_constraintBottom_toTopOf="@+id/login_cluster"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
-        android:id="@+id/loginCluster"
+        android:id="@+id/login_cluster"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -30,15 +30,16 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/emailTitle"
+            android:id="@+id/email_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Email"
+            android:text="@string/login_label_email"
             android:textSize="10pt"
             android:textColor="@color/black"/>
 
         <EditText
-            android:id="@+id/emailLabel"
+            android:paddingHorizontal="10sp"
+            android:id="@+id/email_label"
             android:layout_width="match_parent"
             android:layout_height="16pt"
             android:ems="10"
@@ -47,16 +48,17 @@
 
 
         <TextView
-            android:id="@+id/passwordLabel"
+            android:id="@+id/password_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Password"
+            android:text="@string/login_label_password"
             android:textSize="10pt"
             android:textColor="@color/black"
             android:layout_marginTop="5pt"/>
 
         <EditText
-            android:id="@+id/passwordInput"
+            android:paddingHorizontal="10sp"
+            android:id="@+id/password_input"
             android:layout_width="match_parent"
             android:layout_height="16pt"
             android:ems="10"
@@ -64,10 +66,10 @@
             android:background="@color/gray"/>
 
         <Button
-            android:id="@+id/loginButton"
+            android:id="@+id/login_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Masuk"
+            android:text="@string/login_label_enter"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10pt"/>
     </LinearLayout>
