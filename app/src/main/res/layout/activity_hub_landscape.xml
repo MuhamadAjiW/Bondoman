@@ -6,29 +6,28 @@
     android:layout_height="match_parent">
 
     <FrameLayout
-        android:id="@+id/header"
+        android:id="@+id/header_landscape"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/nav_view_landscape"
         app:layout_constraintTop_toTopOf="parent">
 
         <include
-            android:id="@+id/header_content"
+            android:id="@+id/header_content_landscape"
             layout="@layout/header_layout" />
     </FrameLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/nav_view"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view_landscape"
+        android:layout_width="70dp"
+        android:layout_height="match_parent"
         android:background="?android:attr/windowBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/menu_hub_bottom_nav" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/menu_hub_bottom_nav"
+        />
 
     <fragment
         android:id="@+id/nav_host_fragment_activity_main"
@@ -36,10 +35,11 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@id/nav_view"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/nav_view_landscape"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header"
+        app:layout_constraintTop_toBottomOf="@+id/header_landscape"
         app:navGraph="@navigation/hub_navigation" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
