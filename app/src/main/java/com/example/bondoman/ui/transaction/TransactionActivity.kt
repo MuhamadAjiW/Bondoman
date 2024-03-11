@@ -3,6 +3,7 @@ package com.example.bondoman.ui.transaction
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.example.bondoman.R
@@ -13,10 +14,10 @@ import com.example.bondoman.databinding.ActivityTransactionBinding
 import com.example.bondoman.viewmodel.transaction.TransactionViewModel
 import com.example.bondoman.viewmodel.transaction.TransactionViewModelFactory
 import java.text.SimpleDateFormat
+import java.time.Duration
 import java.util.Date
 import java.util.Locale
 
-//TODO: Input validation
 class TransactionActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTransactionBinding
 
@@ -49,19 +50,31 @@ class TransactionActivity : AppCompatActivity() {
 
         // Create on click
         submitButton.setOnClickListener {
-            transactionViewModel.insert(
-                TransactionEntity(
-                    id = 0,
-                    title = binding.titleInput.text.toString(),
-                    category = binding.categoryInput.selectedItem.toString(),
-                    amount = binding.amountInput.text.toString().toInt(),
-                    // TODO: Location
-                    location = "Dummy Location",
-                    timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+            val title = binding.titleInput.text.toString()
+            val category = binding.categoryInput.selectedItem.toString()
+            val amount = binding.amountInput.text.toString()
+
+            if (title.isEmpty()){
+                Toast.makeText(this, "Please enter a title", Toast.LENGTH_SHORT).show()
+            }
+            else if (amount.isEmpty()){
+                Toast.makeText(this, "Please enter an amount", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                transactionViewModel.insert(
+                    TransactionEntity(
+                        id = 0,
+                        title = title,
+                        category = category,
+                        amount = amount.toInt(),
+                        // TODO: Location
+                        location = "Dummy Location",
+                        timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+                    )
                 )
-            )
+            }
             // TODO: Delete, this is for testing purposes
-            // transactionViewModel.deleteAll()
+            transactionViewModel.deleteAll()
         }
     }
 

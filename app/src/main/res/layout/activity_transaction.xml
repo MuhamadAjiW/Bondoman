@@ -9,92 +9,99 @@
         android:id="@+id/header"
         layout="@layout/header_layout" />
 
-    <LinearLayout
-        android:id="@+id/login_cluster"
-        android:layout_marginTop="20dp"
-        android:layout_marginHorizontal="30dp"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintTop_toBottomOf="@+id/header"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-        <TextView
-            android:id="@+id/title_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/transaction_label_title"
-            android:textColor="@color/black"
-            android:textSize="10pt" />
-
-        <EditText
-            android:paddingHorizontal="10sp"
-            android:id="@+id/title_input"
+        <LinearLayout
+            android:id="@+id/login_cluster"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="30dp"
             android:layout_width="match_parent"
-            android:layout_height="16pt"
-            android:background="@color/gray"
-            android:ems="10"
-            android:inputType="text" />
-
-        <TextView
-            android:id="@+id/amount_label"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5pt"
-            android:text="@string/transaction_label_amount"
-            android:textColor="@color/black"
-            android:textSize="10pt" />
+            android:orientation="vertical">
 
-        <EditText
-            android:paddingHorizontal="10sp"
-            android:id="@+id/amount_input"
-            android:layout_width="match_parent"
-            android:layout_height="16pt"
-            android:background="@color/gray"
-            android:ems="10"
-            android:inputType="numberDecimal" />
+            <TextView
+                android:id="@+id/title_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/transaction_label_title"
+                android:textColor="@color/black"
+                android:textSize="10pt" />
 
-        <TextView
-            android:id="@+id/category_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/transaction_label_category"
-            android:textColor="@color/black"
-            android:textSize="10pt" />
+            <EditText
+                android:paddingHorizontal="10sp"
+                android:id="@+id/title_input"
+                android:layout_width="match_parent"
+                android:layout_height="16pt"
+                android:background="@color/gray"
+                android:ems="10"
+                android:inputType="text" />
 
-        <Spinner
-            android:id="@+id/category_input"
-            android:layout_width="match_parent"
-            android:layout_height="16pt"
-            android:background="@color/gray"/>
+            <TextView
+                android:id="@+id/amount_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5pt"
+                android:text="@string/transaction_label_amount"
+                android:textColor="@color/black"
+                android:textSize="10pt" />
 
-        <TextView
-            android:id="@+id/location_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5pt"
-            android:text="@string/transaction_label_location"
-            android:textColor="@color/black"
-            android:textSize="10pt" />
+            <EditText
+                android:paddingHorizontal="10sp"
+                android:id="@+id/amount_input"
+                android:layout_width="match_parent"
+                android:layout_height="16pt"
+                android:background="@color/gray"
+                android:ems="10"
+                android:inputType="numberDecimal" />
 
-        <EditText
-            android:paddingHorizontal="10sp"
-            android:id="@+id/location_input"
-            android:layout_width="match_parent"
-            android:layout_height="16pt"
-            android:background="@color/gray"
-            android:ems="10"
-            android:inputType="text" />
+            <TextView
+                android:id="@+id/category_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/transaction_label_category"
+                android:textColor="@color/black"
+                android:textSize="10pt" />
 
-        <Button
-            android:id="@+id/submit_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10pt"
-            android:text="@string/transaction_label_submit" />
+            <Spinner
+                android:id="@+id/category_input"
+                android:layout_width="match_parent"
+                android:layout_height="16pt"
+                android:background="@color/gray"/>
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/location_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5pt"
+                android:text="@string/transaction_label_location"
+                android:textColor="@color/black"
+                android:textSize="10pt" />
+
+            <EditText
+                android:paddingHorizontal="10sp"
+                android:id="@+id/location_input"
+                android:layout_width="match_parent"
+                android:layout_height="16pt"
+                android:background="@color/gray"
+                android:ems="10"
+                android:inputType="text" />
+
+            <Button
+                android:id="@+id/submit_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10pt"
+                android:layout_marginBottom="60dp"
+                android:text="@string/transaction_label_submit" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
