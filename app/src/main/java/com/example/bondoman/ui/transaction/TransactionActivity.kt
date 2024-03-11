@@ -12,7 +12,11 @@ import com.example.bondoman.database.repository.TransactionRepository
 import com.example.bondoman.databinding.ActivityTransactionBinding
 import com.example.bondoman.viewmodel.transaction.TransactionViewModel
 import com.example.bondoman.viewmodel.transaction.TransactionViewModelFactory
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
+//TODO: Input validation
 class TransactionActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTransactionBinding
 
@@ -43,44 +47,21 @@ class TransactionActivity : AppCompatActivity() {
         // Initialize category dropdown
         val submitButton = binding.submitButton
 
-        // TODO: Actually do crud
-        // Basically testing for now
+        // Create on click
         submitButton.setOnClickListener {
             transactionViewModel.insert(
                 TransactionEntity(
                     id = 0,
-                    title = "Dummy Data",
-                    category = "Miscellaneous",
-                    amount = 100,
+                    title = binding.titleInput.text.toString(),
+                    category = binding.categoryInput.selectedItem.toString(),
+                    amount = binding.amountInput.text.toString().toInt(),
+                    // TODO: Location
                     location = "Dummy Location",
-                    timestamp = "2024-03-11 12:00:00"
+                    timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
                 )
             )
-            println("Dummy data successfully created")
-            transactionViewModel.update(
-                TransactionEntity(
-                    id = 1,
-                    title = "Dummies",
-                    category = "Miscellaneous",
-                    amount = 100,
-                    location = "Dummy Location",
-                    timestamp = "2024-03-11 12:00:00"
-                )
-            )
-            println("Dummy data successfully updated")
-
-            val transaction: TransactionEntity? = transactionViewModel.getById(1)
-            if(transaction != null){
-                transactionViewModel.delete(transaction)
-                println("Dummy data successfully deleted")
-            } else{
-                println("Dummy data unsuccessfully deleted")
-            }
-
-            transactionViewModel.deleteAll()
-            println("Clearing all data")
-
-            println("Crud test finished")
+            // TODO: Delete, this is for testing purposes
+            // transactionViewModel.deleteAll()
         }
     }
 
