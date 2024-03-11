@@ -23,10 +23,4 @@ data class Transaction (
 
     @ColumnInfo(name = "timestamp")
     val timestamp: String,
-) {
-    // Static macros for category
-    companion object {
-        const val CATEGORY_INCOME = "income"
-        const val CATEGORY_EXPENSES = "expenses"
-    }
-}
+)

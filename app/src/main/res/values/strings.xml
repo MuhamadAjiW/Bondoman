@@ -6,4 +6,22 @@
     <string name="hub_nav_stats">Stats</string>
     <string name="hub_nav_settings">Settings</string>
 
+    <string name="login_label_email">Email</string>
+    <string name="login_label_password">Password</string>
+    <string name="login_label_enter">Login</string>
+
+    <string name="transaction_label_title">Title</string>
+    <string name="transaction_label_amount">Amount</string>
+    <string name="transaction_label_category">Category</string>
+    <string name="transaction_label_location">Location</string>
+    <string name="transaction_label_submit">Submit</string>
+
+    <string name="transaction_category_income">Income</string>
+    <string name="transaction_category_expenses">Expenses</string>
+
+    <string-array name="category_choices">
+        <item>Income</item>
+        <item>Expenses</item>
+    </string-array>
+
 </resources>

@@ -3,6 +3,7 @@ package com.example.bondoman.ui.transaction
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -25,12 +26,17 @@ class TransactionActivity : AppCompatActivity() {
         binding = ActivityTransactionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.header.navTitle.text = "Transaction"
+        binding.header.navTitle.text = getString(R.string.hub_nav_transaction)
         val backButton = binding.header.navBackButton
         backButton.setOnClickListener(::onBackClick)
+
+        val spinner = binding.categoryInput
+        val adapter = ArrayAdapter.createFromResource(this, R.array.category_choices, android.R.layout.simple_spinner_item)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
     }
 
     private fun onBackClick(view: View) {
-
+        onBackPressed()
     }
 }
