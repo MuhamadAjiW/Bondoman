@@ -1,11 +1,11 @@
-package com.example.bondoman.model
+package com.example.bondoman.database.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "transactions")
-data class Transaction (
+data class TransactionEntity (
     @PrimaryKey(autoGenerate = true)
     val id: Int,
 
