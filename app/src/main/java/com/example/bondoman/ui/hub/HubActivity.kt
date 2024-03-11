@@ -1,6 +1,8 @@
 package com.example.bondoman.ui.hub
 
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -18,6 +20,8 @@ class HubActivity : AppCompatActivity() {
 
         binding = ActivityHubBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.header.navBackButton.visibility = View.GONE
 
         val navView: BottomNavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
