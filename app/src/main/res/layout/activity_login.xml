@@ -14,7 +14,7 @@
         android:layout_marginBottom="24dp"
         android:textSize="14pt"
         android:fontFamily="sans-serif-medium"
-        android:textColor="@color/black"
+        android:textColor="?android:textColorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/login_cluster"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:text="@string/login_label_email"
             android:textSize="10pt"
-            android:textColor="@color/black"/>
+            android:textColor="?android:textColorPrimary"/>
 
         <EditText
             android:paddingHorizontal="10sp"
@@ -44,7 +44,8 @@
             android:layout_height="16pt"
             android:ems="10"
             android:inputType="text"
-            android:background="@color/gray"/>
+            android:background="@color/gray"
+            android:textColor="@color/black"/>
 
 
         <TextView
@@ -53,7 +54,7 @@
             android:layout_height="wrap_content"
             android:text="@string/login_label_password"
             android:textSize="10pt"
-            android:textColor="@color/black"
+            android:textColor="?android:textColorPrimary"
             android:layout_marginTop="5pt"/>
 
         <EditText
@@ -63,7 +64,8 @@
             android:layout_height="16pt"
             android:ems="10"
             android:inputType="text"
-            android:background="@color/gray"/>
+            android:background="@color/gray"
+            android:textColor="@color/black"/>
 
         <Button
             android:id="@+id/login_button"

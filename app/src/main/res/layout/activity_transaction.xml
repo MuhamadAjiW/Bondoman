@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/transaction_label_title"
-                android:textColor="@color/black"
+                android:textColor="?android:textColorPrimary"
                 android:textSize="10pt" />
 
             <EditText
@@ -39,7 +39,8 @@
                 android:layout_height="16pt"
                 android:background="@color/gray"
                 android:ems="10"
-                android:inputType="text" />
+                android:inputType="text"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/amount_label"
@@ -47,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5pt"
                 android:text="@string/transaction_label_amount"
-                android:textColor="@color/black"
+                android:textColor="?android:textColorPrimary"
                 android:textSize="10pt" />
 
             <EditText
@@ -57,21 +58,23 @@
                 android:layout_height="16pt"
                 android:background="@color/gray"
                 android:ems="10"
-                android:inputType="numberDecimal" />
+                android:inputType="numberDecimal"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/category_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/transaction_label_category"
-                android:textColor="@color/black"
+                android:textColor="?android:textColorPrimary"
                 android:textSize="10pt" />
 
             <Spinner
                 android:id="@+id/category_input"
                 android:layout_width="match_parent"
                 android:layout_height="16pt"
-                android:background="@color/gray"/>
+                android:background="@color/gray"
+                android:entries="@array/category_choices"/>
 
             <TextView
                 android:id="@+id/location_label"
@@ -79,7 +82,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5pt"
                 android:text="@string/transaction_label_location"
-                android:textColor="@color/black"
+                android:textColor="?android:textColorPrimary"
                 android:textSize="10pt" />
 
             <EditText
@@ -89,7 +92,8 @@
                 android:layout_height="16pt"
                 android:background="@color/gray"
                 android:ems="10"
-                android:inputType="text" />
+                android:inputType="text"
+                android:textColor="@color/black"/>
 
             <Button
                 android:id="@+id/submit_button"
