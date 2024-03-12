@@ -19,6 +19,10 @@
     <string name="transaction_category_income">Income</string>
     <string name="transaction_category_expenses">Expenses</string>
 
+    <string name="settings_save_transaction">Save transaction list</string>
+    <string name="settings_send_transaction">Send transaction list</string>
+    <string name="settings_logout">Log out</string>
+
     <string-array name="category_choices">
         <item>Income</item>
         <item>Expenses</item>
