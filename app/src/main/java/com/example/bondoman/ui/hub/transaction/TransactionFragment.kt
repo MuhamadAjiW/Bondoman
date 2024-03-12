@@ -14,18 +14,15 @@ import com.example.bondoman.databinding.FragmentTransactionBinding
 import com.example.bondoman.ui.transaction.TransactionActivity
 
 class TransactionFragment : Fragment() {
-    private var _binding: FragmentTransactionBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentTransactionBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentTransactionBinding.inflate(inflater, container, false)
-        val button = _binding!!.addTransaction
-        button.setOnClickListener(::onAddClick)
-
+        binding = FragmentTransactionBinding.inflate(inflater, container, false)
+        binding.addTransaction.setOnClickListener(::onAddClick)
         return binding.root
     }
 

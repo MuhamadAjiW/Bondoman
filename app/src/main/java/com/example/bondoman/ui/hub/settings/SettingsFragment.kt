@@ -31,20 +31,17 @@ import java.util.Date
 import java.util.Locale
 
 class SettingsFragment : Fragment() {
-    private var _binding: FragmentSettingsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentSettingsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
-
+        binding = FragmentSettingsBinding.inflate(inflater, container, false)
         binding.buttonSaveTransaction.setOnClickListener(::saveTransaction)
         binding.buttonSendTransaction.setOnClickListener(::sendTransaction)
         binding.buttonLogout.setOnClickListener(::logout)
-
         return binding.root
     }
 

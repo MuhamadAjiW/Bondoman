@@ -11,15 +11,14 @@ import com.example.bondoman.R
 import com.example.bondoman.databinding.FragmentStatsBinding
 
 class StatsFragment : Fragment() {
-    private var _binding: FragmentStatsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentStatsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentStatsBinding.inflate(inflater, container, false)
+        binding = FragmentStatsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
