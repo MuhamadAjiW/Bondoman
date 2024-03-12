@@ -4,27 +4,35 @@ import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.bondoman.R
 import com.example.bondoman.database.AppDatabase
+import com.example.bondoman.database.repository.TransactionRepository
 import com.example.bondoman.databinding.ActivityHubBinding
 import com.example.bondoman.databinding.ActivityHubLandscapeBinding
+import com.example.bondoman.viewmodel.transaction.TransactionViewModel
+import com.example.bondoman.viewmodel.transaction.TransactionViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 
 class HubActivity : AppCompatActivity() {
     private lateinit var portrait_binding: ActivityHubBinding
     private lateinit var landscape_binding: ActivityHubLandscapeBinding
+    lateinit var transactionViewModel: TransactionViewModel
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
 
+        // Initialize database
+        val database = AppDatabase.getInstance(this)
+        val transactionRepo = TransactionRepository(database)
+        val transactionModelFactory = TransactionViewModelFactory(transactionRepo)
+        transactionViewModel = ViewModelProvider(this, transactionModelFactory)[TransactionViewModel::class.java]
 
-
-        // TODO: Make orientation responsive
         // Initialize navbar and fragments
         val orientation = resources.configuration.orientation
         if(orientation == Configuration.ORIENTATION_LANDSCAPE){

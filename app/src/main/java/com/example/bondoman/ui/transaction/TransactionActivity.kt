@@ -70,13 +70,15 @@ class TransactionActivity : AppCompatActivity() {
                         category = category,
                         amount = amount.toInt(),
                         // TODO: Location
-                        location = "Dummy Location",
+                        location = binding.locationInput.text.toString(),
                         timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
                     )
                 )
+                Toast.makeText(this, "Transaction saved successfully", Toast.LENGTH_SHORT).show()
+//                TODO: Delete, this is for testing purposes
+//                transactionViewModel.deleteAll()
+                onBackPressed()
             }
-            // TODO: Delete, this is for testing purposes
-            transactionViewModel.deleteAll()
         }
     }
 
