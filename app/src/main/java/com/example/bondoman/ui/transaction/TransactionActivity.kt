@@ -1,10 +1,13 @@
 package com.example.bondoman.ui.transaction
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.bondoman.R
 import com.example.bondoman.database.AppDatabase
@@ -41,9 +44,8 @@ class TransactionActivity : AppCompatActivity() {
 
         // Initialize category dropdown
         val spinner = binding.categoryInput
-        val adapter = ArrayAdapter.createFromResource(this, R.array.category_choices, android.R.layout.simple_spinner_item)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
+        spinner.setSelection(0, true);
+        (spinner.selectedView as TextView).setTextColor(ContextCompat.getColor(this, R.color.black))
 
         // Initialize category dropdown
         val submitButton = binding.submitButton
@@ -68,13 +70,15 @@ class TransactionActivity : AppCompatActivity() {
                         category = category,
                         amount = amount.toInt(),
                         // TODO: Location
-                        location = "Dummy Location",
+                        location = binding.locationInput.text.toString(),
                         timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
                     )
                 )
+                Toast.makeText(this, "Transaction saved successfully", Toast.LENGTH_SHORT).show()
+//                TODO: Delete, this is for testing purposes
+//                transactionViewModel.deleteAll()
+                onBackPressed()
             }
-            // TODO: Delete, this is for testing purposes
-            transactionViewModel.deleteAll()
         }
     }
 
