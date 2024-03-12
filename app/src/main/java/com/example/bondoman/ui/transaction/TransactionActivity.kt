@@ -57,10 +57,10 @@ class TransactionActivity : AppCompatActivity() {
             val amount = binding.amountInput.text.toString()
 
             if (title.isEmpty()){
-                Toast.makeText(this, "Please enter a title", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.transaction_add_toast_error_title), Toast.LENGTH_SHORT).show()
             }
             else if (amount.isEmpty()){
-                Toast.makeText(this, "Please enter an amount", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.transaction_add_toast_error_amount), Toast.LENGTH_SHORT).show()
             }
             else{
                 transactionViewModel.insert(
@@ -74,7 +74,7 @@ class TransactionActivity : AppCompatActivity() {
                         timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
                     )
                 )
-                Toast.makeText(this, "Transaction saved successfully", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.transaction_add_toast_success), Toast.LENGTH_SHORT).show()
 //                TODO: Delete, this is for testing purposes
 //                transactionViewModel.deleteAll()
                 onBackPressed()

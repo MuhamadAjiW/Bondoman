@@ -10,18 +10,33 @@
     <string name="login_label_password">Password</string>
     <string name="login_label_enter">Login</string>
 
+    <string name="transaction_label_number">No</string>
     <string name="transaction_label_title">Title</string>
     <string name="transaction_label_amount">Amount</string>
     <string name="transaction_label_category">Category</string>
     <string name="transaction_label_location">Location</string>
+    <string name="transaction_label_timestamp">Timestamp</string>
     <string name="transaction_label_submit">Submit</string>
 
     <string name="transaction_category_income">Income</string>
     <string name="transaction_category_expenses">Expenses</string>
 
+    <string name="transaction_add_toast_error_title">Please enter a title</string>
+    <string name="transaction_add_toast_error_amount">Please enter an amount</string>
+    <string name="transaction_add_toast_success">Transaction saved successfully</string>
+
     <string name="settings_save_transaction">Save transaction list</string>
     <string name="settings_send_transaction">Send transaction list</string>
     <string name="settings_logout">Log out</string>
+
+    <string name="email_subject">Bondoman: Transaction Data</string>
+    <string name="email_text">Attached are transaction
+        data from Bondoman, data is recorded at </string>
+    <string name="email_toast_success">Sending file...</string>
+    <string name="email_toast_fail">Failed to send file</string>
+
+    <string name="save_toast_success">File saved at </string>
+    <string name="settings_toast_uninitialized_viewmodel">Error: Data Unavailable</string>
 
     <string-array name="category_choices">
         <item>Income</item>

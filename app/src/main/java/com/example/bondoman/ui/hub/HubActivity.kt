@@ -36,7 +36,6 @@ class HubActivity : AppCompatActivity() {
         // Initialize navbar and fragments
         val orientation = resources.configuration.orientation
         if(orientation == Configuration.ORIENTATION_LANDSCAPE){
-            println("Window is landscape")
             landscape_binding = ActivityHubLandscapeBinding.inflate(layoutInflater)
             setContentView(landscape_binding.root)
 
@@ -58,7 +57,6 @@ class HubActivity : AppCompatActivity() {
             navView.setupWithNavController(navController)
         }
         else{
-            println("Window is portrait")
             portrait_binding = ActivityHubBinding.inflate(layoutInflater)
             setContentView(portrait_binding.root)
 

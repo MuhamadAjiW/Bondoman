@@ -84,7 +84,14 @@ class SettingsFragment : Fragment() {
                 headerCellStyle.setBorderRight(BorderStyle.THIN)
 
                 // Initialize headers
-                val headers = arrayOf("No", "Title", "Category", "Amount", "Location", "Timestamp")
+                val headers = arrayOf(
+                    getString(R.string.transaction_label_number),
+                    getString(R.string.transaction_label_title),
+                    getString(R.string.transaction_label_category),
+                    getString(R.string.transaction_label_amount),
+                    getString(R.string.transaction_label_location),
+                    getString(R.string.transaction_label_timestamp)
+                )
                 val firstRow = workSheet.createRow(0)
                 for ((index, header) in headers.withIndex()) {
                     val cell = firstRow.createCell(index)
@@ -136,7 +143,7 @@ class SettingsFragment : Fragment() {
                 workbook.write(file.outputStream())
                 workbook.close()
 
-                Toast.makeText(requireContext(), "File saved at $path", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),  getString(R.string.save_toast_success) + "$path", Toast.LENGTH_SHORT).show()
 
                 // Open file immediately
                 val intent = Intent(Intent.ACTION_VIEW)
@@ -145,7 +152,7 @@ class SettingsFragment : Fragment() {
                 startActivity(intent)
             }
             else{
-                Toast.makeText(requireContext(), "Error: Data Unavailable", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.settings_toast_uninitialized_viewmodel), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -168,7 +175,14 @@ class SettingsFragment : Fragment() {
                 headerCellStyle.setBorderRight(BorderStyle.THIN)
 
                 // Initialize headers
-                val headers = arrayOf("No", "Title", "Category", "Amount", "Location", "Timestamp")
+                val headers = arrayOf(
+                    getString(R.string.transaction_label_number),
+                    getString(R.string.transaction_label_title),
+                    getString(R.string.transaction_label_category),
+                    getString(R.string.transaction_label_amount),
+                    getString(R.string.transaction_label_location),
+                    getString(R.string.transaction_label_timestamp)
+                )
                 val firstRow = workSheet.createRow(0)
                 for ((index, header) in headers.withIndex()) {
                     val cell = firstRow.createCell(index)
@@ -228,22 +242,22 @@ class SettingsFragment : Fragment() {
                 val emailIntent = Intent(Intent.ACTION_SEND)
                 emailIntent.type = "text/plain"
                 emailIntent.putExtra(Intent.EXTRA_EMAIL, emailRecipient)
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Bondoman: Transaction Data")
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "Attached are transaction data from Bondoman, data is recorded at " + SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()))
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject))
+                emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.email_text) + SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()))
                 emailIntent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(requireContext(), requireContext().packageName + ".provider", file))
                 emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
                 // Send email
                 try {
                     startActivity(Intent.createChooser(emailIntent, "Send Email"))
-                    Toast.makeText(requireContext(), "File sent successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.email_toast_success), Toast.LENGTH_SHORT).show()
                 } catch (e: Exception){
                     println(e.message)
-                    Toast.makeText(requireContext(), "Failed to send file", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.email_toast_fail), Toast.LENGTH_SHORT).show()
                 }
             }
             else{
-                Toast.makeText(requireContext(), "Error: Data Unavailable", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), getString(R.string.settings_toast_uninitialized_viewmodel), Toast.LENGTH_SHORT).show()
             }
         }
     }
