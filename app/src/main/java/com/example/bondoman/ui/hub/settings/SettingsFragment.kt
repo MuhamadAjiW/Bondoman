@@ -3,6 +3,7 @@ package com.example.bondoman.ui.hub.settings
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.view.LayoutInflater
@@ -17,7 +18,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.bondoman.R
-import com.example.bondoman.database.entity.TransactionEntity
 import com.example.bondoman.databinding.FragmentSettingsBinding
 import com.example.bondoman.ui.login.LoginActivity
 import com.example.bondoman.viewmodel.transaction.TransactionViewModel
@@ -150,9 +150,102 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    //TODO: Implement
     private fun sendTransaction(view: View){
-        println("Transaction sent")
+        // Init with viewmodel
+        val transactionViewModel = ViewModelProvider(requireActivity()).get(TransactionViewModel::class.java)
+        transactionViewModel.list.observe(viewLifecycleOwner) { transactionList ->
+            if (transactionList != null){
+
+                // Initialize excel file
+                val workbook = XSSFWorkbook()
+                val workSheet = workbook.createSheet("Transactions")
+                val headerCellStyle = workbook.createCellStyle()
+                headerCellStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.index)
+                headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND)
+                headerCellStyle.setBorderTop(BorderStyle.THIN)
+                headerCellStyle.setBorderBottom(BorderStyle.THIN)
+                headerCellStyle.setBorderLeft(BorderStyle.THIN)
+                headerCellStyle.setBorderRight(BorderStyle.THIN)
+
+                // Initialize headers
+                val headers = arrayOf("No", "Title", "Category", "Amount", "Location", "Timestamp")
+                val firstRow = workSheet.createRow(0)
+                for ((index, header) in headers.withIndex()) {
+                    val cell = firstRow.createCell(index)
+                    cell.setCellValue(header)
+                    cell.cellStyle = headerCellStyle
+
+                    workSheet.setColumnWidth(index, 6000)
+                }
+                workSheet.setColumnWidth(0, 2000)
+
+                // Insert data
+                val cellStyle = headerCellStyle.copy()
+                cellStyle.setFillForegroundColor(IndexedColors.WHITE.index)
+                cellStyle.wrapText = true
+
+                for ((index, transaction) in transactionList.withIndex()){
+                    val row = workSheet.createRow(1 + index)
+
+                    var cell = row.createCell(0)
+                    cell.setCellValue((1 + index).toString())
+                    cell.cellStyle = cellStyle
+
+                    cell = row.createCell(1)
+                    cell.setCellValue(transaction.title)
+                    cell.cellStyle = cellStyle
+
+                    cell = row.createCell(2)
+                    cell.setCellValue(transaction.category)
+                    cell.cellStyle = cellStyle
+
+                    cell = row.createCell(3)
+                    cell.setCellValue(transaction.amount.toDouble())
+                    cell.cellStyle = cellStyle
+
+                    cell = row.createCell(4)
+                    cell.setCellValue(transaction.location)
+                    cell.cellStyle = cellStyle
+
+                    cell = row.createCell(5)
+                    cell.setCellValue(transaction.timestamp)
+                    cell.cellStyle = cellStyle
+                }
+
+                // Output file
+                val path = requireContext().cacheDir
+                val file = File(
+                    path,
+                    "BondomanTransaction" + SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault()).format(Date()) + ".xlsx"
+                )
+                workbook.write(file.outputStream())
+                workbook.close()
+
+                // Prep email
+                // TODO: set email recipient as the logged in account
+                val emailRecipient = arrayOf("13521095@std.stei.itb.ac.id")
+//                val emailIntent = Intent(Intent.ACTION_SENDTO,  Uri.fromParts("mailto",emailRecipient, null))
+                val emailIntent = Intent(Intent.ACTION_SEND)
+                emailIntent.type = "text/plain"
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, emailRecipient)
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Bondoman: Transaction Data")
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Attached are transaction data from Bondoman, data is recorded at " + SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()))
+                emailIntent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(requireContext(), requireContext().packageName + ".provider", file))
+                emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+                // Send email
+                try {
+                    startActivity(Intent.createChooser(emailIntent, "Send Email"))
+                    Toast.makeText(requireContext(), "File sent successfully", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception){
+                    println(e.message)
+                    Toast.makeText(requireContext(), "Failed to send file", Toast.LENGTH_SHORT).show()
+                }
+            }
+            else{
+                Toast.makeText(requireContext(), "Error: Data Unavailable", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     //TODO: Implement
