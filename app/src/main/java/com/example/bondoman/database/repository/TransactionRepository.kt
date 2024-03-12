@@ -2,7 +2,6 @@ package com.example.bondoman.database.repository
 
 import androidx.lifecycle.LiveData
 import com.example.bondoman.database.AppDatabase
-import com.example.bondoman.database.dao.TransactionDao
 import com.example.bondoman.database.entity.TransactionEntity
 
 class TransactionRepository(private val database: AppDatabase) {

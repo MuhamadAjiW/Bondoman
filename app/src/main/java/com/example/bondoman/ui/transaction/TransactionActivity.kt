@@ -1,9 +1,7 @@
 package com.example.bondoman.ui.transaction
 
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +15,6 @@ import com.example.bondoman.databinding.ActivityTransactionBinding
 import com.example.bondoman.viewmodel.transaction.TransactionViewModel
 import com.example.bondoman.viewmodel.transaction.TransactionViewModelFactory
 import java.text.SimpleDateFormat
-import java.time.Duration
 import java.util.Date
 import java.util.Locale
 
