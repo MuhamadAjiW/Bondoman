@@ -30,7 +30,7 @@ class TransactionActivity : AppCompatActivity() {
 
         // Initialize database
         val database = AppDatabase.getInstance(this)
-        val transactionRepo = TransactionRepository(database)
+        val transactionRepo = TransactionRepository(database.transactionDao)
         val transactionModelFactory = TransactionViewModelFactory(transactionRepo)
         val transactionViewModel = ViewModelProvider(this, transactionModelFactory)[TransactionViewModel::class.java]
 
