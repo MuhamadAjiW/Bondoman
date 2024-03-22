@@ -8,8 +8,8 @@
 
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/pieChart"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="270dp"
+        android:layout_height="270dp"
         android:layout_centerHorizontal="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

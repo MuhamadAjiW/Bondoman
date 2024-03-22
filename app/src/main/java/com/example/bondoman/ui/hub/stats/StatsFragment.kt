@@ -57,7 +57,7 @@ class StatsFragment : Fragment() {
     private fun setupChart() {
         binding.pieChart.setUsePercentValues(true)
         binding.pieChart.description.isEnabled = false
-        binding.pieChart.setExtraOffsets(5f, 10f, 5f, 5f)
+        binding.pieChart.setExtraOffsets(5f, 3f, 5f, 3f)
         binding.pieChart.dragDecelerationFrictionCoef = 0.95f
 
         binding.pieChart.isDrawHoleEnabled = true
