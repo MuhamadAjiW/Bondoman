@@ -52,6 +52,7 @@ dependencies {
     implementation("androidx.room:room-ktx:2.4.0")
     implementation("org.apache.poi:poi:5.2.0")
     implementation("org.apache.poi:poi-ooxml:5.2.0")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     annotationProcessor("androidx.room:room-compiler:2.4.0")
     ksp("androidx.room:room-compiler:2.4.0")
     testImplementation("junit:junit:4.13.2")
