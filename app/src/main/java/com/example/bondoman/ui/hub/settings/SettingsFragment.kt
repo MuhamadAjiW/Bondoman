@@ -18,6 +18,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.bondoman.R
 import com.example.bondoman.databinding.FragmentSettingsBinding
+import com.example.bondoman.types.enums.ExcelTypes
+import com.example.bondoman.types.util.ExcelUtil
 import com.example.bondoman.ui.login.LoginActivity
 import com.example.bondoman.viewmodel.transaction.TransactionViewModel
 import org.apache.poi.ss.usermodel.BorderStyle
@@ -31,6 +33,7 @@ import java.util.Locale
 
 class SettingsFragment : Fragment() {
     private lateinit var binding: FragmentSettingsBinding
+    private lateinit var excelUtil: ExcelUtil
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,6 +44,9 @@ class SettingsFragment : Fragment() {
         binding.buttonSaveTransaction.setOnClickListener(::saveTransaction)
         binding.buttonSendTransaction.setOnClickListener(::sendTransaction)
         binding.buttonLogout.setOnClickListener(::logout)
+
+        excelUtil = ExcelUtil(requireContext())
+
         return binding.root
     }
 
@@ -66,78 +72,13 @@ class SettingsFragment : Fragment() {
         // Init with viewmodel
         val transactionViewModel = ViewModelProvider(requireActivity()).get(TransactionViewModel::class.java)
         transactionViewModel.list.observe(viewLifecycleOwner) { transactionList ->
-            if (transactionList != null){
-
-                // Initialize excel file
-                val workbook = XSSFWorkbook()
-                val workSheet = workbook.createSheet("Transactions")
-                val headerCellStyle = workbook.createCellStyle()
-                headerCellStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.index)
-                headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND)
-                headerCellStyle.setBorderTop(BorderStyle.THIN)
-                headerCellStyle.setBorderBottom(BorderStyle.THIN)
-                headerCellStyle.setBorderLeft(BorderStyle.THIN)
-                headerCellStyle.setBorderRight(BorderStyle.THIN)
-
-                // Initialize headers
-                val headers = arrayOf(
-                    getString(R.string.transaction_label_number),
-                    getString(R.string.transaction_label_title),
-                    getString(R.string.transaction_label_category),
-                    getString(R.string.transaction_label_amount),
-                    getString(R.string.transaction_label_location),
-                    getString(R.string.transaction_label_timestamp)
-                )
-                val firstRow = workSheet.createRow(0)
-                for ((index, header) in headers.withIndex()) {
-                    val cell = firstRow.createCell(index)
-                    cell.setCellValue(header)
-                    cell.cellStyle = headerCellStyle
-
-                    workSheet.setColumnWidth(index, 6000)
-                }
-                workSheet.setColumnWidth(0, 2000)
-
-                // Insert data
-                val cellStyle = headerCellStyle.copy()
-                cellStyle.setFillForegroundColor(IndexedColors.WHITE.index)
-                cellStyle.wrapText = true
-
-                for ((index, transaction) in transactionList.withIndex()){
-                    val row = workSheet.createRow(1 + index)
-
-                    var cell = row.createCell(0)
-                    cell.setCellValue((1 + index).toString())
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(1)
-                    cell.setCellValue(transaction.title)
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(2)
-                    cell.setCellValue(transaction.category)
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(3)
-                    cell.setCellValue(transaction.amount.toDouble())
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(4)
-                    cell.setCellValue(transaction.location)
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(5)
-                    cell.setCellValue(transaction.timestamp)
-                    cell.cellStyle = cellStyle
-                }
-                // Output file
+            try {
                 val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                val file = File(
-                    path,
-                    "BondomanTransaction" + SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault()).format(Date()) + ".xlsx"
+                val file = excelUtil.exportTransaction(
+                    transactionList,
+                    ExcelTypes.XLS,
+                    path
                 )
-                workbook.write(file.outputStream())
-                workbook.close()
 
                 Toast.makeText(requireContext(),  getString(R.string.save_toast_success) + "$path", Toast.LENGTH_SHORT).show()
 
@@ -147,8 +88,8 @@ class SettingsFragment : Fragment() {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }
-            else{
-                Toast.makeText(requireContext(), getString(R.string.settings_toast_uninitialized_viewmodel), Toast.LENGTH_SHORT).show()
+            catch (e: Error){
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -157,79 +98,12 @@ class SettingsFragment : Fragment() {
         // Init with viewmodel
         val transactionViewModel = ViewModelProvider(requireActivity()).get(TransactionViewModel::class.java)
         transactionViewModel.list.observe(viewLifecycleOwner) { transactionList ->
-            if (transactionList != null){
-
-                // Initialize excel file
-                val workbook = XSSFWorkbook()
-                val workSheet = workbook.createSheet("Transactions")
-                val headerCellStyle = workbook.createCellStyle()
-                headerCellStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.index)
-                headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND)
-                headerCellStyle.setBorderTop(BorderStyle.THIN)
-                headerCellStyle.setBorderBottom(BorderStyle.THIN)
-                headerCellStyle.setBorderLeft(BorderStyle.THIN)
-                headerCellStyle.setBorderRight(BorderStyle.THIN)
-
-                // Initialize headers
-                val headers = arrayOf(
-                    getString(R.string.transaction_label_number),
-                    getString(R.string.transaction_label_title),
-                    getString(R.string.transaction_label_category),
-                    getString(R.string.transaction_label_amount),
-                    getString(R.string.transaction_label_location),
-                    getString(R.string.transaction_label_timestamp)
+            try {
+                val file = excelUtil.exportTransaction(
+                    transactionList,
+                    ExcelTypes.XLS,
+                    requireContext().cacheDir
                 )
-                val firstRow = workSheet.createRow(0)
-                for ((index, header) in headers.withIndex()) {
-                    val cell = firstRow.createCell(index)
-                    cell.setCellValue(header)
-                    cell.cellStyle = headerCellStyle
-
-                    workSheet.setColumnWidth(index, 6000)
-                }
-                workSheet.setColumnWidth(0, 2000)
-
-                // Insert data
-                val cellStyle = headerCellStyle.copy()
-                cellStyle.setFillForegroundColor(IndexedColors.WHITE.index)
-                cellStyle.wrapText = true
-
-                for ((index, transaction) in transactionList.withIndex()){
-                    val row = workSheet.createRow(1 + index)
-
-                    var cell = row.createCell(0)
-                    cell.setCellValue((1 + index).toString())
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(1)
-                    cell.setCellValue(transaction.title)
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(2)
-                    cell.setCellValue(transaction.category)
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(3)
-                    cell.setCellValue(transaction.amount.toDouble())
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(4)
-                    cell.setCellValue(transaction.location)
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(5)
-                    cell.setCellValue(transaction.timestamp)
-                    cell.cellStyle = cellStyle
-                }
-
-                // Output file
-                val path = requireContext().cacheDir
-                val file = File(
-                    path,
-                    "BondomanTransaction" + SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault()).format(Date()) + ".xlsx"
-                )
-                workbook.write(file.outputStream())
-                workbook.close()
 
                 // Prep email
                 // TODO: set email recipient as the logged in account
@@ -243,17 +117,16 @@ class SettingsFragment : Fragment() {
                 emailIntent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(requireContext(), requireContext().packageName + ".provider", file))
                 emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
-                // Send email
                 try {
                     startActivity(Intent.createChooser(emailIntent, "Send Email"))
                     Toast.makeText(requireContext(), getString(R.string.email_toast_success), Toast.LENGTH_SHORT).show()
                 } catch (e: Exception){
                     println(e.message)
-                    Toast.makeText(requireContext(), getString(R.string.email_toast_fail), Toast.LENGTH_SHORT).show()
+                    throw Error(getString(R.string.email_toast_fail))
                 }
-            }
-            else{
-                Toast.makeText(requireContext(), getString(R.string.settings_toast_uninitialized_viewmodel), Toast.LENGTH_SHORT).show()
+
+            } catch (e: Error){
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
             }
         }
     }
