@@ -1,12 +1,15 @@
 package com.example.bondoman.ui.hub.scan
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -36,6 +39,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class ScanFragment : Fragment() {
+    // TODO: Added preview for transaction response data from server
     private lateinit var binding: FragmentScanBinding
     private lateinit var scanViewModel: ScanViewModel
 
@@ -57,6 +61,9 @@ class ScanFragment : Fragment() {
         binding.imageCaptureButton.setOnClickListener {
             takePhoto()
         }
+        binding.selectPhotoButton.setOnClickListener {
+            selectPhoto()
+        }
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
@@ -77,6 +84,15 @@ class ScanFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         cameraExecutor.shutdown()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1) {
+            val image = data?.data
+            val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, image)
+
+            uploadImage(bitmap)
+        }
     }
 
     private fun startCamera() {
@@ -115,15 +131,13 @@ class ScanFragment : Fragment() {
                 }
 
                 override fun onCaptureSuccess(image: ImageProxy) {
-                    uploadImage(image)
+                    uploadImage(image.toBitmap())
                 }
             }
         )
     }
 
-    private fun uploadImage(image: ImageProxy) {
-        val bitmap = image.toBitmap()
-
+    private fun uploadImage(bitmap: Bitmap) {
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.WEBP, 80, stream)
         val byteArray = stream.toByteArray()
@@ -133,7 +147,7 @@ class ScanFragment : Fragment() {
             try {
                 // TODO: Get stored auth token
                 val authToken =
-                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaW0iOiIxMzUyMTE0OSIsImlhdCI6MTcxMTIyMTQ3OCwiZXhwIjoxNzExMjIxNzc4fQ.gYhg_0K5tJlBqwt4i3F0B9amdY_nDXqISoGeZPPNruQ"
+                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaW0iOiIxMzUyMTE0OSIsImlhdCI6MTcxMTIyMzk3NSwiZXhwIjoxNzExMjI0Mjc1fQ.TLB_xIVzsoWntIf-sqrWTWSW75AhlFKPV9MZ6SxC-T8"
                 val response = RetrofitClient.uploadInstance.uploadImage(
                     MultipartBody.Part.createFormData(
                         "file",
@@ -145,12 +159,13 @@ class ScanFragment : Fragment() {
 
                 if (response.isSuccessful) {
                     for (item in response.body()!!.items.items) {
+                        Log.d(TAG, item.name)
                         scanViewModel.insertUploaded(
                             TransactionEntity(
                                 id = 0,
                                 title = item.name,
                                 // TODO: Category
-                                category = "kucing",
+                                category = "scanned",
                                 amount = item.qty * item.price.toInt(),
                                 // TODO: Location
                                 location = "lokasi",
@@ -163,12 +178,25 @@ class ScanFragment : Fragment() {
                             )
                         )
                     }
+
+                    Toast.makeText(
+                        requireActivity(),
+                        getString(R.string.scan_add_toast_success),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             } catch (e: Exception) {
                 Log.e(TAG, e.toString())
             }
         }
     }
+
+    private fun selectPhoto() {
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        startActivityForResult(intent, 1)
+    }
+
 
     companion object {
         private const val TAG = "ScanFragment"
