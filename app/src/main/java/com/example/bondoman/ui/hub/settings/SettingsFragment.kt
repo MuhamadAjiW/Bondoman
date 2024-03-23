@@ -73,14 +73,13 @@ class SettingsFragment : Fragment() {
         val transactionViewModel = ViewModelProvider(requireActivity()).get(TransactionViewModel::class.java)
         transactionViewModel.list.observe(viewLifecycleOwner) { transactionList ->
             try {
-                val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                 val file = excelUtil.exportTransaction(
                     transactionList,
                     ExcelTypes.XLS,
-                    path
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                 )
 
-                Toast.makeText(requireContext(),  getString(R.string.save_toast_success) + "$path", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),  getString(R.string.save_toast_success) + "$file", Toast.LENGTH_SHORT).show()
 
                 // Open file immediately
                 val intent = Intent(Intent.ACTION_VIEW)
