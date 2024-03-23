@@ -13,7 +13,9 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.bondoman.R
@@ -31,9 +33,48 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
     private lateinit var binding: FragmentSettingsBinding
     private lateinit var excelUtil: ExcelUtil
+    private val excelDialog: ExcelDialogFragment = ExcelDialogFragment()
+    private var excelFormat: ExcelTypes = ExcelTypes.XLSX
+
+    override fun onExcelDialogPositiveClick(dialog: DialogFragment) {
+        val transactionViewModel = ViewModelProvider(requireActivity()).get(TransactionViewModel::class.java)
+        transactionViewModel.list.observe(viewLifecycleOwner) { transactionList ->
+            try {
+                val file = excelUtil.exportTransaction(
+                    transactionList,
+                    excelFormat,
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                )
+
+                Toast.makeText(requireContext(),  getString(R.string.save_toast_success) + "$file", Toast.LENGTH_SHORT).show()
+
+                // Open file immediately
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.setDataAndType(FileProvider.getUriForFile(requireContext(), requireContext().packageName + ".provider", file), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
+            catch (e: Error){
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        excelFormat = ExcelTypes.XLSX
+    }
+
+    override fun onExcelDialogNegativeClick(dialog: DialogFragment) {
+        excelDialog.dismiss()
+    }
+
+    override fun onExcelDialogChoiceClick(dialog: DialogFragment, index: Int) {
+        when (index){
+            0 -> excelFormat = ExcelTypes.XLSX
+            1 -> excelFormat = ExcelTypes.XLS
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +87,7 @@ class SettingsFragment : Fragment() {
         binding.buttonLogout.setOnClickListener(::logout)
 
         excelUtil = ExcelUtil(requireContext())
+        excelDialog.listener = this
 
         return binding.root
     }
@@ -69,28 +111,7 @@ class SettingsFragment : Fragment() {
             return
         }
 
-        // Init with viewmodel
-        val transactionViewModel = ViewModelProvider(requireActivity()).get(TransactionViewModel::class.java)
-        transactionViewModel.list.observe(viewLifecycleOwner) { transactionList ->
-            try {
-                val file = excelUtil.exportTransaction(
-                    transactionList,
-                    ExcelTypes.XLS,
-                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                )
-
-                Toast.makeText(requireContext(),  getString(R.string.save_toast_success) + "$file", Toast.LENGTH_SHORT).show()
-
-                // Open file immediately
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.setDataAndType(FileProvider.getUriForFile(requireContext(), requireContext().packageName + ".provider", file), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
-            }
-            catch (e: Error){
-                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
-            }
-        }
+        excelDialog.show(parentFragmentManager as FragmentManager, "excel")
     }
 
     private fun sendTransaction(view: View){
