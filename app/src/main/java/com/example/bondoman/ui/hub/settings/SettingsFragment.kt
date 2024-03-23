@@ -15,7 +15,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.bondoman.R
@@ -24,22 +23,67 @@ import com.example.bondoman.types.enums.ExcelTypes
 import com.example.bondoman.types.util.ExcelUtil
 import com.example.bondoman.ui.login.LoginActivity
 import com.example.bondoman.viewmodel.transaction.TransactionViewModel
-import org.apache.poi.ss.usermodel.BorderStyle
-import org.apache.poi.ss.usermodel.FillPatternType
-import org.apache.poi.ss.usermodel.IndexedColors
-import org.apache.poi.xssf.usermodel.XSSFWorkbook
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
+    internal enum class ButtonCode{
+        SAVE_BUTTON,
+        SEND_BUTTON
+    }
+
     private lateinit var binding: FragmentSettingsBinding
     private lateinit var excelUtil: ExcelUtil
     private val excelDialog: ExcelDialogFragment = ExcelDialogFragment()
     private var excelFormat: ExcelTypes = ExcelTypes.XLSX
+    private var buttonCode: ButtonCode = ButtonCode.SAVE_BUTTON
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        binding.buttonSaveTransaction.setOnClickListener(::onSaveTransactionClick)
+        binding.buttonSendTransaction.setOnClickListener(::onSendTransactionClick)
+        binding.buttonLogout.setOnClickListener(::onLogoutClick)
+
+        excelUtil = ExcelUtil(requireContext())
+        excelDialog.listener = this
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            val header = requireActivity().findViewById<TextView>(R.id.nav_title)
+            header.text = getString(R.string.hub_nav_settings)
+        }
+    }
 
     override fun onExcelDialogPositiveClick(dialog: DialogFragment) {
+        when (buttonCode){
+            ButtonCode.SAVE_BUTTON -> saveExcel()
+            ButtonCode.SEND_BUTTON -> sendExcel()
+        }
+        excelFormat = ExcelTypes.XLSX
+    }
+
+    override fun onExcelDialogNegativeClick(dialog: DialogFragment) {
+        excelDialog.dismiss()
+    }
+
+    override fun onExcelDialogChoiceClick(dialog: DialogFragment, index: Int) {
+        when (index){
+            0 -> excelFormat = ExcelTypes.XLSX
+            1 -> excelFormat = ExcelTypes.XLS
+        }
+    }
+
+    private fun saveExcel(){
         val transactionViewModel = ViewModelProvider(requireActivity()).get(TransactionViewModel::class.java)
         transactionViewModel.list.observe(viewLifecycleOwner) { transactionList ->
             try {
@@ -61,61 +105,9 @@ class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
                 Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
             }
         }
-
-        excelFormat = ExcelTypes.XLSX
     }
 
-    override fun onExcelDialogNegativeClick(dialog: DialogFragment) {
-        excelDialog.dismiss()
-    }
-
-    override fun onExcelDialogChoiceClick(dialog: DialogFragment, index: Int) {
-        when (index){
-            0 -> excelFormat = ExcelTypes.XLSX
-            1 -> excelFormat = ExcelTypes.XLS
-        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        binding.buttonSaveTransaction.setOnClickListener(::saveTransaction)
-        binding.buttonSendTransaction.setOnClickListener(::sendTransaction)
-        binding.buttonLogout.setOnClickListener(::logout)
-
-        excelUtil = ExcelUtil(requireContext())
-        excelDialog.listener = this
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            val header = requireActivity().findViewById<TextView>(R.id.nav_title)
-            header.text = getString(R.string.hub_nav_settings)
-        }
-    }
-
-    private fun saveTransaction(view: View){
-        // Request permission
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
-        }
-
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            return
-        }
-
-        excelDialog.show(parentFragmentManager as FragmentManager, "excel")
-    }
-
-    private fun sendTransaction(view: View){
-        // Init with viewmodel
+    private fun sendExcel(){
         val transactionViewModel = ViewModelProvider(requireActivity()).get(TransactionViewModel::class.java)
         transactionViewModel.list.observe(viewLifecycleOwner) { transactionList ->
             try {
@@ -151,10 +143,27 @@ class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
         }
     }
 
+    private fun onSaveTransactionClick(view: View){
+        // Request permission
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+        }
+
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            return
+        }
+
+        buttonCode = ButtonCode.SAVE_BUTTON
+        excelDialog.show(parentFragmentManager, "excel")
+    }
+
+    private fun onSendTransactionClick(view: View){
+        buttonCode = ButtonCode.SEND_BUTTON
+        excelDialog.show(parentFragmentManager, "excel")
+    }
+
     //TODO: Implement
-    private fun logout(view: View){
-
-
+    private fun onLogoutClick(view: View){
         val intent = Intent(requireContext(), LoginActivity::class.java)
         startActivity(intent)
         requireActivity().finish()
