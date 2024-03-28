@@ -25,20 +25,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.bondoman.R
-import com.example.bondoman.api.RetrofitClient
 import com.example.bondoman.database.AppDatabase
-import com.example.bondoman.database.entity.TransactionEntity
 import com.example.bondoman.database.repository.TransactionRepository
 import com.example.bondoman.databinding.FragmentScanBinding
 import com.example.bondoman.viewmodel.scan.ScanViewModel
 import com.example.bondoman.viewmodel.scan.ScanViewModelFactory
 import okhttp3.MediaType
-import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.ByteArrayOutputStream
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -92,8 +86,7 @@ class ScanFragment : Fragment() {
         scanViewModel = ViewModelProvider(this, scanViewModelFactory)[ScanViewModel::class.java]
 
         scanViewModel.isCameraPermissionGranted.observe(
-            viewLifecycleOwner,
-            cameraPermissionObserver
+            viewLifecycleOwner, cameraPermissionObserver
         )
 
         binding.imageCaptureButton.setOnClickListener {
@@ -128,6 +121,7 @@ class ScanFragment : Fragment() {
         super.onDestroyView()
         cameraExecutor.shutdown()
     }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 1) {
@@ -193,50 +187,22 @@ class ScanFragment : Fragment() {
 
         val imageReqBody = RequestBody.create(MediaType.parse("image/*"), byteArray)
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            try {
-                // TODO: Get stored auth token
-                val authToken =
-                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaW0iOiIxMzUyMTE0OSIsImlhdCI6MTcxMTY0MTc1NiwiZXhwIjoxNzExNjQyMDU2fQ.314qw7qhwywN7pkYUaAeQclbBUr4Hj-kzjlUbFnSHgk"
-                val response = RetrofitClient.uploadInstance.uploadImage(
-                    MultipartBody.Part.createFormData(
-                        "file", "test", imageReqBody
-                    ), authToken
-                )
+            val success = scanViewModel.uploadNota(imageReqBody)
 
-                if (response.isSuccessful) {
-                    for (item in response.body()!!.items.items) {
-                        Log.d(TAG, item.name)
-                        scanViewModel.insertUploaded(
-                            TransactionEntity(
-                                id = 0, title = item.name,
-                                // TODO: Category
-                                category = "scanned", amount = item.qty * item.price.toInt(),
-                                // TODO: Location
-                                location = "lokasi", timestamp = SimpleDateFormat(
-                                    "yyyy-MM-dd HH:mm:ss", Locale.getDefault()
-                                ).format(
-                                    Date()
-                                )
-                            )
-                        )
-                    }
-
-                    Toast.makeText(
-                        requireActivity(),
-                        getString(R.string.scan_add_toast_success),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-                    Toast.makeText(
-                        requireActivity(),
-                        getString(R.string.scan_add_toast_failed),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, e.toString())
+            if (success) {
+                Toast.makeText(
+                    requireActivity(),
+                    getString(R.string.scan_add_toast_success),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(
+                    requireActivity(), getString(R.string.scan_add_toast_failed), Toast.LENGTH_SHORT
+                ).show()
             }
         }
+
+
     }
 
     private fun selectPhoto() {
