@@ -49,4 +49,6 @@
     <string name="stop_capture">Stop Capture</string>
 
     <string name="scan_add_toast_success">Successfully added new transactions</string>
+    <string name="scan_add_toast_failed">Failed to add new transactions</string>
+    <string name="scan_enable_camera">Please camera to access this feature</string>
 </resources>

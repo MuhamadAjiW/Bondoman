@@ -1,6 +1,8 @@
 package com.example.bondoman.ui.hub.scan
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.MediaStore
@@ -10,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -18,6 +21,7 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.bondoman.R
@@ -46,10 +50,39 @@ class ScanFragment : Fragment() {
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
 
+    private val activityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            scanViewModel.isCameraPermissionGranted.value = true
+        }
+    }
+
+    // Observe change in camera permission
+    private val cameraPermissionObserver = Observer<Boolean> {
+        if (it) {
+            startCamera()
+            binding.imageCaptureButton.visibility = View.VISIBLE
+            binding.selectPhotoButton.visibility = View.VISIBLE
+            binding.viewFinder.visibility = View.VISIBLE
+
+            binding.textEnableCamera.visibility = View.INVISIBLE
+        } else {
+            binding.imageCaptureButton.visibility = View.INVISIBLE
+            binding.selectPhotoButton.visibility = View.INVISIBLE
+            binding.viewFinder.visibility = View.INVISIBLE
+
+            binding.textEnableCamera.visibility = View.VISIBLE
+        }
+    }
+
+    companion object {
+        private const val TAG = "ScanFragment"
+        private const val CAMERA_PERMISSION = Manifest.permission.CAMERA
+    }
+
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentScanBinding.inflate(inflater, container, false)
 
@@ -57,6 +90,11 @@ class ScanFragment : Fragment() {
         val transactionRepo = TransactionRepository(database.transactionDao)
         val scanViewModelFactory = ScanViewModelFactory(transactionRepo)
         scanViewModel = ViewModelProvider(this, scanViewModelFactory)[ScanViewModel::class.java]
+
+        scanViewModel.isCameraPermissionGranted.observe(
+            viewLifecycleOwner,
+            cameraPermissionObserver
+        )
 
         binding.imageCaptureButton.setOnClickListener {
             takePhoto()
@@ -77,7 +115,12 @@ class ScanFragment : Fragment() {
             val header = requireActivity().findViewById<TextView>(R.id.nav_title)
             header.text = getString(R.string.hub_nav_scan)
 
-            startCamera()
+            // Check camera permission
+            if (!checkCameraPermission()) {
+                requestCameraPermission()
+            } else {
+                scanViewModel.isCameraPermissionGranted.value = true
+            }
         }
     }
 
@@ -95,15 +138,23 @@ class ScanFragment : Fragment() {
         }
     }
 
+    private fun requestCameraPermission() {
+        activityResultLauncher.launch(CAMERA_PERMISSION)
+    }
+
+    private fun checkCameraPermission(): Boolean {
+        return ContextCompat.checkSelfPermission(
+            requireActivity().baseContext, CAMERA_PERMISSION
+        ) == PackageManager.PERMISSION_GRANTED
+    }
+
     private fun startCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireActivity())
         cameraProviderFuture.addListener({
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-            val preview = Preview.Builder()
-                .build()
-                .also {
-                    it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
-                }
+            val preview = Preview.Builder().build().also {
+                it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+            }
 
             imageCapture = ImageCapture.Builder().build()
 
@@ -123,8 +174,7 @@ class ScanFragment : Fragment() {
     private fun takePhoto() {
         val imageCapture = imageCapture ?: return
 
-        imageCapture.takePicture(
-            ContextCompat.getMainExecutor(requireActivity()),
+        imageCapture.takePicture(ContextCompat.getMainExecutor(requireActivity()),
             object : ImageCapture.OnImageCapturedCallback() {
                 override fun onError(exc: ImageCaptureException) {
                     Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
@@ -133,8 +183,7 @@ class ScanFragment : Fragment() {
                 override fun onCaptureSuccess(image: ImageProxy) {
                     uploadImage(image.toBitmap())
                 }
-            }
-        )
+            })
     }
 
     private fun uploadImage(bitmap: Bitmap) {
@@ -147,14 +196,11 @@ class ScanFragment : Fragment() {
             try {
                 // TODO: Get stored auth token
                 val authToken =
-                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaW0iOiIxMzUyMTE0OSIsImlhdCI6MTcxMTIyMzk3NSwiZXhwIjoxNzExMjI0Mjc1fQ.TLB_xIVzsoWntIf-sqrWTWSW75AhlFKPV9MZ6SxC-T8"
+                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaW0iOiIxMzUyMTE0OSIsImlhdCI6MTcxMTY0MTc1NiwiZXhwIjoxNzExNjQyMDU2fQ.314qw7qhwywN7pkYUaAeQclbBUr4Hj-kzjlUbFnSHgk"
                 val response = RetrofitClient.uploadInstance.uploadImage(
                     MultipartBody.Part.createFormData(
-                        "file",
-                        "test",
-                        imageReqBody
-                    ),
-                    authToken
+                        "file", "test", imageReqBody
+                    ), authToken
                 )
 
                 if (response.isSuccessful) {
@@ -162,16 +208,12 @@ class ScanFragment : Fragment() {
                         Log.d(TAG, item.name)
                         scanViewModel.insertUploaded(
                             TransactionEntity(
-                                id = 0,
-                                title = item.name,
+                                id = 0, title = item.name,
                                 // TODO: Category
-                                category = "scanned",
-                                amount = item.qty * item.price.toInt(),
+                                category = "scanned", amount = item.qty * item.price.toInt(),
                                 // TODO: Location
-                                location = "lokasi",
-                                timestamp = SimpleDateFormat(
-                                    "yyyy-MM-dd HH:mm:ss",
-                                    Locale.getDefault()
+                                location = "lokasi", timestamp = SimpleDateFormat(
+                                    "yyyy-MM-dd HH:mm:ss", Locale.getDefault()
                                 ).format(
                                     Date()
                                 )
@@ -182,6 +224,12 @@ class ScanFragment : Fragment() {
                     Toast.makeText(
                         requireActivity(),
                         getString(R.string.scan_add_toast_success),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        requireActivity(),
+                        getString(R.string.scan_add_toast_failed),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -195,10 +243,5 @@ class ScanFragment : Fragment() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
         startActivityForResult(intent, 1)
-    }
-
-
-    companion object {
-        private const val TAG = "ScanFragment"
     }
 }
