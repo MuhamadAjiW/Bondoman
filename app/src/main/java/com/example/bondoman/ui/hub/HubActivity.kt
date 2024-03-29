@@ -23,7 +23,7 @@ class HubActivity : AppCompatActivity() {
     private lateinit var portrait_binding: ActivityHubBinding
     private lateinit var landscape_binding: ActivityHubLandscapeBinding
     lateinit var transactionViewModel: TransactionViewModel
-    override fun onCreate(savedInstanceState: Bundle?){
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
 
@@ -31,11 +31,12 @@ class HubActivity : AppCompatActivity() {
         val database = AppDatabase.getInstance(this)
         val transactionRepo = TransactionRepository(database.transactionDao)
         val transactionModelFactory = TransactionViewModelFactory(transactionRepo)
-        transactionViewModel = ViewModelProvider(this, transactionModelFactory)[TransactionViewModel::class.java]
+        transactionViewModel =
+            ViewModelProvider(this, transactionModelFactory)[TransactionViewModel::class.java]
 
         // Initialize navbar and fragments
         val orientation = resources.configuration.orientation
-        if(orientation == Configuration.ORIENTATION_LANDSCAPE){
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             landscape_binding = ActivityHubLandscapeBinding.inflate(layoutInflater)
             setContentView(landscape_binding.root)
 
@@ -55,8 +56,7 @@ class HubActivity : AppCompatActivity() {
             )
             setupActionBarWithNavController(navController, appBarConfiguration)
             navView.setupWithNavController(navController)
-        }
-        else{
+        } else {
             portrait_binding = ActivityHubBinding.inflate(layoutInflater)
             setContentView(portrait_binding.root)
 
