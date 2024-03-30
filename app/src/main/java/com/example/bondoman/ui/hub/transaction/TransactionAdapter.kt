@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
@@ -45,15 +46,28 @@ class TransactionAdapter(
             tvAmount.text = amount
 
             // TODO: Reverse Geocoding
-            tvLocation.text = tsList[position].location
+            var locStr = context.getString(R.string.no_location_data)
+            if (tsList[position].latitude != null && tsList[position].longitude != null) {
+                locStr = "(${tsList[position].latitude}, ${tsList[position].longitude})"
+
+                btnLocation.visibility = View.VISIBLE
+                tvLocation.visibility = View.VISIBLE
+                locationIcon.visibility = View.VISIBLE
+            } else {
+                btnLocation.visibility = View.GONE
+                tvLocation.visibility = View.GONE
+                locationIcon.visibility = View.GONE
+            }
 
             btnLocation.setOnClickListener {
-                // TODO: location
-                val gmapsIntentUri = Uri.parse("geo:46.414382,10.013988")
+                val gmapsIntentUri = Uri.parse("geo:${tsList[position].latitude}, ${tsList[position].longitude}")
                 val mapIntent = Intent(Intent.ACTION_VIEW, gmapsIntentUri)
                 mapIntent.setPackage("com.google.android.apps.maps")
                 context.startActivity(mapIntent)
             }
+
+            tvLocation.text = locStr
+
 
             btnEdit.setOnClickListener {
                 val intent = Intent(context, TransactionActivity::class.java)
@@ -64,7 +78,7 @@ class TransactionAdapter(
                 intent.putExtra(TransactionActivity.KEY_TITLE, tsList[position].title)
                 intent.putExtra(TransactionActivity.KEY_AMOUNT, tsList[position].amount)
                 intent.putExtra(TransactionActivity.KEY_CATEGORY, context.resources.getStringArray(R.array.category_choices).indexOf(tsList[position].category))
-                intent.putExtra(TransactionActivity.KEY_LOCATION, tsList[position].location)
+                intent.putExtra(TransactionActivity.KEY_LOCATION, locStr)
                 intent.putExtra(TransactionActivity.KEY_TIMESTAMP, tsList[position].timestamp)
 
                 context.startActivity(intent)

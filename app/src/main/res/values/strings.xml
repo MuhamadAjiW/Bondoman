@@ -35,7 +35,7 @@
 
     <string name="email_subject">Bondoman: Transaction Data</string>
     <string name="email_text">Attached are transaction
-        data from Bondoman, data is recorded at </string>
+        data from Bondoman, data is recorded at</string>
     <string name="email_toast_success">Sending file...</string>
     <string name="email_toast_fail">Failed to send file</string>
 
@@ -65,4 +65,13 @@
         <item>Income</item>
         <item>Expenses</item>
     </string-array>
+
+    <string name="start_capture">Start Capture</string>
+    <string name="stop_capture">Stop Capture</string>
+
+    <string name="longitude">Longitude</string>
+    <string name="latitude">Latitude</string>
+    <string name="get_latest_location">Get latest location</string>
+    <string name="delete_location">Delete location</string>
+    <string name="no_location_data">No location data</string>
 </resources>

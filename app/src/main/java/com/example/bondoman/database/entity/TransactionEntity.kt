@@ -1,5 +1,6 @@
 package com.example.bondoman.database.entity
 
+import androidx.annotation.Nullable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -18,8 +19,13 @@ data class TransactionEntity (
     @ColumnInfo(name = "amount")
     var amount: Int,
 
-    @ColumnInfo(name = "location")
-    var location: String,
+    @ColumnInfo(name = "latitude")
+    @Nullable
+    val latitude: Double?,
+
+    @ColumnInfo(name = "longitude")
+    @Nullable
+    val longitude: Double?,
 
     @ColumnInfo(name = "timestamp")
     val timestamp: String,

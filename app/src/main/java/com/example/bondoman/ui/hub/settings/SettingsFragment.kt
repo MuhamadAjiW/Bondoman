@@ -127,7 +127,7 @@ class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
                 emailIntent.type = "text/plain"
                 emailIntent.putExtra(Intent.EXTRA_EMAIL, emailRecipient)
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject))
-                emailIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.email_text) + SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()))
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "${getString(R.string.email_text)} ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())}")
                 emailIntent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(requireContext(), requireContext().packageName + ".provider", file))
                 emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 

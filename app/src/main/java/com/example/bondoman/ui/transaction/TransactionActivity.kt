@@ -1,10 +1,14 @@
 package com.example.bondoman.ui.transaction
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.bondoman.R
@@ -12,8 +16,12 @@ import com.example.bondoman.database.AppDatabase
 import com.example.bondoman.database.entity.TransactionEntity
 import com.example.bondoman.database.repository.TransactionRepository
 import com.example.bondoman.databinding.ActivityTransactionBinding
+import com.example.bondoman.viewmodel.transaction.LocationViewModel
+import com.example.bondoman.viewmodel.transaction.LocationViewModelFactory
 import com.example.bondoman.viewmodel.transaction.TransactionViewModel
 import com.example.bondoman.viewmodel.transaction.TransactionViewModelFactory
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -23,6 +31,11 @@ class TransactionActivity : AppCompatActivity() {
     private lateinit var transactionViewModel: TransactionViewModel
     private var actionCode: Int = 0
     private var transactionId: Int = 0
+    
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationViewModel: LocationViewModel
+    private var savedLat: Double? = null
+    private var savedLng: Double? = null
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -36,9 +49,32 @@ class TransactionActivity : AppCompatActivity() {
         val transactionModelFactory = TransactionViewModelFactory(transactionRepo)
         transactionViewModel = ViewModelProvider(this, transactionModelFactory)[TransactionViewModel::class.java]
 
+        // Location VM
+        val locationModelFactory = LocationViewModelFactory()
+        locationViewModel = ViewModelProvider(this, locationModelFactory)[LocationViewModel::class.java]
+        locationViewModel.location.observe(this) {
+            observeLocation(it)
+        }
+
         // Initialize header
         binding.header.navTitle.text = getString(R.string.hub_nav_transaction)
         val backButton = binding.header.navBackButton
+        backButton.setOnClickListener(::onBackClick)
+
+        // Initialize category dropdown
+        val spinner = binding.categoryInput
+        spinner.setSelection(0, true);
+        (spinner.selectedView as TextView).setTextColor(ContextCompat.getColor(this, R.color.black))
+
+        // Locate button
+        val locateButton = binding.btnLocate
+        locateButton.setOnClickListener(::onLocateClick)
+
+        // Delete button
+        val deleteButton = binding.btnDelete
+        deleteButton.setOnClickListener(::onDeleteClick)
+
+        // Initialize category dropdown
         val submitButton = binding.submitButton
         backButton.setOnClickListener(::onBackClick)
         submitButton.setOnClickListener(::onSubmitClick)
@@ -47,12 +83,12 @@ class TransactionActivity : AppCompatActivity() {
         val titleInitial = intent.getStringExtra(KEY_TITLE)
         val amountInitial = intent.getIntExtra(KEY_AMOUNT, 0)
         val categoryInitial = intent.getIntExtra(KEY_CATEGORY, 0)
-        val locationInitial = intent.getStringExtra(KEY_LOCATION)
+        var locationInitial = intent.getStringExtra(KEY_LOCATION)
 
         binding.titleInput.setText(titleInitial)
         binding.amountInput.setText(amountInitial.toString())
         binding.categoryInput.setSelection(categoryInitial, true)
-        binding.locationInput.setText(locationInitial)
+        binding.locationText.text = locationInitial
 
         // Initialize category dropdown color
         (binding.categoryInput.selectedView as TextView).setTextColor(ContextCompat.getColor(this, R.color.black))
@@ -61,6 +97,63 @@ class TransactionActivity : AppCompatActivity() {
         transactionId = intent.getIntExtra(KEY_TRANSACTION_ID, 0)
 
         if(actionCode == ACTION_EDIT) binding.categoryInput.isEnabled = false
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+    }
+
+    private fun onDeleteClick(view: View) {
+        locationViewModel.setLoc(null, null)
+    }
+
+    private fun onLocateClick(view: View) {
+        getLastLocation()
+    }
+
+    private fun getLastLocation() {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
+                1
+            )
+
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED) {
+
+                return
+            }
+        }
+
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                locationViewModel.setLoc(location?.latitude, location?.longitude)
+            }
+    }
+
+    private fun observeLocation(loc: Pair<Double?, Double?>) {
+        val (lat, lng) = loc
+        savedLat = lat
+        savedLng = lng
+
+        if (lat != null && lng != null) {
+            binding.locationText.text = loc.toString()
+        } else {
+            binding.locationText.text = getString(R.string.no_location_data)
+        }
     }
 
     // Header back button
@@ -72,8 +165,6 @@ class TransactionActivity : AppCompatActivity() {
         val title = binding.titleInput.text.toString()
         val category = binding.categoryInput.selectedItem.toString()
         val amount = binding.amountInput.text.toString()
-        // TODO: Location
-        val location = binding.locationInput.text.toString()
 
         if (title.isEmpty()){
             Toast.makeText(this, getString(R.string.transaction_add_toast_error_title), Toast.LENGTH_SHORT).show()
@@ -83,29 +174,31 @@ class TransactionActivity : AppCompatActivity() {
         }
         else{
             when (actionCode){
-                ACTION_ADD ->{
+                ACTION_ADD -> {
                         transactionViewModel.insert(
                             TransactionEntity(
                                 id = 0,
                                 title = title,
                                 category = category,
                                 amount = amount.toInt(),
-                                location = location,
-                                timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+                                timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()),
+                                latitude = savedLat,
+                                longitude = savedLng
                             )
                         )
                         Toast.makeText(this, getString(R.string.transaction_add_toast_success), Toast.LENGTH_SHORT).show()
                     }
 
-                ACTION_EDIT ->{
+                ACTION_EDIT -> {
                     transactionViewModel.update(
                         TransactionEntity(
                             id = intent.getIntExtra(KEY_TRANSACTION_ID, 0),
                             title = title,
                             category = category,
                             amount = amount.toInt(),
-                            location = location,
-                            timestamp = intent.getStringExtra(KEY_TIMESTAMP)!!
+                            timestamp = intent.getStringExtra(KEY_TIMESTAMP)!!,
+                            latitude = savedLat,
+                            longitude = savedLng
                         )
                     )
                     Toast.makeText(this, getString(R.string.transaction_edit_toast_success), Toast.LENGTH_SHORT).show()

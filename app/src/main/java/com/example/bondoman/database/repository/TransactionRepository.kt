@@ -61,7 +61,9 @@ class TransactionRepository(private val transactionDao: TransactionDao) {
                         // TODO: Category
                         category = "scanned", amount = item.qty * item.price.toInt(),
                         // TODO: Location
-                        location = "lokasi", timestamp = SimpleDateFormat(
+                        latitude = null,
+                        longitude = null,
+                        timestamp = SimpleDateFormat(
                             "yyyy-MM-dd HH:mm:ss", Locale.getDefault()
                         ).format(
                             Date()
