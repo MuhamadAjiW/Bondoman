@@ -59,7 +59,6 @@ class TransactionAdapter(
                 val intent = Intent(context, TransactionActivity::class.java)
                 intent.putExtra(TransactionActivity.actionKey, TransactionActivity.ACTION_EDIT)
 
-                // Pass all data
                 // TODO: Consider serializing or just pass the id and read it from the transaction page. Might offer better performance though
                 intent.putExtra(TransactionActivity.transactionIdKey, tsList[position].id)
                 intent.putExtra(TransactionActivity.titleKey, tsList[position].title)
@@ -83,7 +82,6 @@ class TransactionAdapter(
     }
 
     override fun onDeleteDialogPositiveClick(dialog: DialogFragment) {
-        println("Deleting data: " + transaction.id)
         viewModel.delete(transaction)
         deleteConfirmDialog.dismiss()
     }
