@@ -13,24 +13,31 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.example.bondoman.R
 import com.example.bondoman.databinding.FragmentSettingsBinding
+import com.example.bondoman.types.enums.ExcelTypes
+import com.example.bondoman.types.util.ExcelUtil
 import com.example.bondoman.ui.login.LoginActivity
 import com.example.bondoman.viewmodel.transaction.TransactionViewModel
-import org.apache.poi.ss.usermodel.BorderStyle
-import org.apache.poi.ss.usermodel.FillPatternType
-import org.apache.poi.ss.usermodel.IndexedColors
-import org.apache.poi.xssf.usermodel.XSSFWorkbook
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
+    internal enum class ButtonCode{
+        SAVE_BUTTON,
+        SEND_BUTTON
+    }
+
     private lateinit var binding: FragmentSettingsBinding
+    private lateinit var excelUtil: ExcelUtil
+    private val excelDialog: ExcelDialogFragment = ExcelDialogFragment()
+    private var excelFormat: ExcelTypes = ExcelTypes.XLSX
+    private var buttonCode: ButtonCode = ButtonCode.SAVE_BUTTON
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,9 +45,13 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
-        binding.buttonSaveTransaction.setOnClickListener(::saveTransaction)
-        binding.buttonSendTransaction.setOnClickListener(::sendTransaction)
-        binding.buttonLogout.setOnClickListener(::logout)
+        binding.buttonSaveTransaction.setOnClickListener(::onSaveTransactionClick)
+        binding.buttonSendTransaction.setOnClickListener(::onSendTransactionClick)
+        binding.buttonLogout.setOnClickListener(::onLogoutClick)
+
+        excelUtil = ExcelUtil(requireContext())
+        excelDialog.listener = this
+
         return binding.root
     }
 
@@ -53,93 +64,36 @@ class SettingsFragment : Fragment() {
         }
     }
 
-    private fun saveTransaction(view: View){
-        // Request permission
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+    override fun onExcelDialogPositiveClick(dialog: DialogFragment) {
+        when (buttonCode){
+            ButtonCode.SAVE_BUTTON -> saveExcel()
+            ButtonCode.SEND_BUTTON -> sendExcel()
         }
+        excelFormat = ExcelTypes.XLSX
+    }
 
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            return
+    override fun onExcelDialogNegativeClick(dialog: DialogFragment) {
+        excelDialog.dismiss()
+    }
+
+    override fun onExcelDialogChoiceClick(dialog: DialogFragment, index: Int) {
+        when (index){
+            0 -> excelFormat = ExcelTypes.XLSX
+            1 -> excelFormat = ExcelTypes.XLS
         }
+    }
 
-        // Init with viewmodel
+    private fun saveExcel(){
         val transactionViewModel = ViewModelProvider(requireActivity()).get(TransactionViewModel::class.java)
         transactionViewModel.list.observe(viewLifecycleOwner) { transactionList ->
-            if (transactionList != null){
-
-                // Initialize excel file
-                val workbook = XSSFWorkbook()
-                val workSheet = workbook.createSheet("Transactions")
-                val headerCellStyle = workbook.createCellStyle()
-                headerCellStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.index)
-                headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND)
-                headerCellStyle.setBorderTop(BorderStyle.THIN)
-                headerCellStyle.setBorderBottom(BorderStyle.THIN)
-                headerCellStyle.setBorderLeft(BorderStyle.THIN)
-                headerCellStyle.setBorderRight(BorderStyle.THIN)
-
-                // Initialize headers
-                val headers = arrayOf(
-                    getString(R.string.transaction_label_number),
-                    getString(R.string.transaction_label_title),
-                    getString(R.string.transaction_label_category),
-                    getString(R.string.transaction_label_amount),
-                    getString(R.string.transaction_label_location),
-                    getString(R.string.transaction_label_timestamp)
+            try {
+                val file = excelUtil.exportTransaction(
+                    transactionList,
+                    excelFormat,
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
                 )
-                val firstRow = workSheet.createRow(0)
-                for ((index, header) in headers.withIndex()) {
-                    val cell = firstRow.createCell(index)
-                    cell.setCellValue(header)
-                    cell.cellStyle = headerCellStyle
 
-                    workSheet.setColumnWidth(index, 6000)
-                }
-                workSheet.setColumnWidth(0, 2000)
-
-                // Insert data
-                val cellStyle = headerCellStyle.copy()
-                cellStyle.setFillForegroundColor(IndexedColors.WHITE.index)
-                cellStyle.wrapText = true
-
-                for ((index, transaction) in transactionList.withIndex()){
-                    val row = workSheet.createRow(1 + index)
-
-                    var cell = row.createCell(0)
-                    cell.setCellValue((1 + index).toString())
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(1)
-                    cell.setCellValue(transaction.title)
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(2)
-                    cell.setCellValue(transaction.category)
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(3)
-                    cell.setCellValue(transaction.amount.toDouble())
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(4)
-                    cell.setCellValue(transaction.location)
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(5)
-                    cell.setCellValue(transaction.timestamp)
-                    cell.cellStyle = cellStyle
-                }
-                // Output file
-                val path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                val file = File(
-                    path,
-                    "BondomanTransaction" + SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault()).format(Date()) + ".xlsx"
-                )
-                workbook.write(file.outputStream())
-                workbook.close()
-
-                Toast.makeText(requireContext(),  getString(R.string.save_toast_success) + "$path", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),  getString(R.string.save_toast_success) + "$file", Toast.LENGTH_SHORT).show()
 
                 // Open file immediately
                 val intent = Intent(Intent.ACTION_VIEW)
@@ -147,89 +101,21 @@ class SettingsFragment : Fragment() {
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }
-            else{
-                Toast.makeText(requireContext(), getString(R.string.settings_toast_uninitialized_viewmodel), Toast.LENGTH_SHORT).show()
+            catch (e: Error){
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun sendTransaction(view: View){
-        // Init with viewmodel
+    private fun sendExcel(){
         val transactionViewModel = ViewModelProvider(requireActivity()).get(TransactionViewModel::class.java)
         transactionViewModel.list.observe(viewLifecycleOwner) { transactionList ->
-            if (transactionList != null){
-
-                // Initialize excel file
-                val workbook = XSSFWorkbook()
-                val workSheet = workbook.createSheet("Transactions")
-                val headerCellStyle = workbook.createCellStyle()
-                headerCellStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.index)
-                headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND)
-                headerCellStyle.setBorderTop(BorderStyle.THIN)
-                headerCellStyle.setBorderBottom(BorderStyle.THIN)
-                headerCellStyle.setBorderLeft(BorderStyle.THIN)
-                headerCellStyle.setBorderRight(BorderStyle.THIN)
-
-                // Initialize headers
-                val headers = arrayOf(
-                    getString(R.string.transaction_label_number),
-                    getString(R.string.transaction_label_title),
-                    getString(R.string.transaction_label_category),
-                    getString(R.string.transaction_label_amount),
-                    getString(R.string.transaction_label_location),
-                    getString(R.string.transaction_label_timestamp)
+            try {
+                val file = excelUtil.exportTransaction(
+                    transactionList,
+                    ExcelTypes.XLS,
+                    requireContext().cacheDir
                 )
-                val firstRow = workSheet.createRow(0)
-                for ((index, header) in headers.withIndex()) {
-                    val cell = firstRow.createCell(index)
-                    cell.setCellValue(header)
-                    cell.cellStyle = headerCellStyle
-
-                    workSheet.setColumnWidth(index, 6000)
-                }
-                workSheet.setColumnWidth(0, 2000)
-
-                // Insert data
-                val cellStyle = headerCellStyle.copy()
-                cellStyle.setFillForegroundColor(IndexedColors.WHITE.index)
-                cellStyle.wrapText = true
-
-                for ((index, transaction) in transactionList.withIndex()){
-                    val row = workSheet.createRow(1 + index)
-
-                    var cell = row.createCell(0)
-                    cell.setCellValue((1 + index).toString())
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(1)
-                    cell.setCellValue(transaction.title)
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(2)
-                    cell.setCellValue(transaction.category)
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(3)
-                    cell.setCellValue(transaction.amount.toDouble())
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(4)
-                    cell.setCellValue(transaction.location)
-                    cell.cellStyle = cellStyle
-
-                    cell = row.createCell(5)
-                    cell.setCellValue(transaction.timestamp)
-                    cell.cellStyle = cellStyle
-                }
-
-                // Output file
-                val path = requireContext().cacheDir
-                val file = File(
-                    path,
-                    "BondomanTransaction" + SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault()).format(Date()) + ".xlsx"
-                )
-                workbook.write(file.outputStream())
-                workbook.close()
 
                 // Prep email
                 // TODO: set email recipient as the logged in account
@@ -243,25 +129,41 @@ class SettingsFragment : Fragment() {
                 emailIntent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(requireContext(), requireContext().packageName + ".provider", file))
                 emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
-                // Send email
                 try {
                     startActivity(Intent.createChooser(emailIntent, "Send Email"))
                     Toast.makeText(requireContext(), getString(R.string.email_toast_success), Toast.LENGTH_SHORT).show()
                 } catch (e: Exception){
                     println(e.message)
-                    Toast.makeText(requireContext(), getString(R.string.email_toast_fail), Toast.LENGTH_SHORT).show()
+                    throw Error(getString(R.string.email_toast_fail))
                 }
-            }
-            else{
-                Toast.makeText(requireContext(), getString(R.string.settings_toast_uninitialized_viewmodel), Toast.LENGTH_SHORT).show()
+
+            } catch (e: Error){
+                Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
             }
         }
     }
 
+    private fun onSaveTransactionClick(view: View){
+        // Request permission
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+        }
+
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            return
+        }
+
+        buttonCode = ButtonCode.SAVE_BUTTON
+        excelDialog.show(parentFragmentManager, "excel")
+    }
+
+    private fun onSendTransactionClick(view: View){
+        buttonCode = ButtonCode.SEND_BUTTON
+        excelDialog.show(parentFragmentManager, "excel")
+    }
+
     //TODO: Implement
-    private fun logout(view: View){
-
-
+    private fun onLogoutClick(view: View){
         val intent = Intent(requireContext(), LoginActivity::class.java)
         startActivity(intent)
         requireActivity().finish()

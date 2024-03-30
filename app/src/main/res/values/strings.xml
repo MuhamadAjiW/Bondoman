@@ -35,7 +35,7 @@
     <string name="email_toast_success">Sending file...</string>
     <string name="email_toast_fail">Failed to send file</string>
 
-    <string name="save_toast_success">File saved at </string>
+    <string name="save_toast_success">File saved</string>
     <string name="settings_toast_uninitialized_viewmodel">Error: Data Unavailable</string>
 
     <string-array name="category_choices">
@@ -43,4 +43,12 @@
         <item>Expenses</item>
     </string-array>
 
+    <string name="take_photo">Take Photo</string>
+    <string name="select_photo">Select Photo</string>
+    <string name="start_capture">Start Capture</string>
+    <string name="stop_capture">Stop Capture</string>
+
+    <string name="scan_add_toast_success">Successfully added new transactions</string>
+    <string name="scan_add_toast_failed">Failed to add new transactions</string>
+    <string name="scan_enable_camera">Please camera to access this feature</string>
 </resources>
