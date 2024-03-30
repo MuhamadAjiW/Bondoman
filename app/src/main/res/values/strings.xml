@@ -3,6 +3,7 @@
 
     <string name="hub_nav_transaction">Transaction</string>
     <string name="hub_nav_scan">Scan</string>
+    <string name="hub_nav_twibbon">Twibbon</string>
     <string name="hub_nav_stats">Stats</string>
     <string name="hub_nav_settings">Settings</string>
 
@@ -50,5 +51,5 @@
 
     <string name="scan_add_toast_success">Successfully added new transactions</string>
     <string name="scan_add_toast_failed">Failed to add new transactions</string>
-    <string name="scan_enable_camera">Please camera to access this feature</string>
+    <string name="scan_enable_camera">Please allow camera permission to access this feature</string>
 </resources>
