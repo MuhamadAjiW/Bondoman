@@ -1,6 +1,6 @@
 package com.example.bondoman.ui.hub.transaction
 
-import android.content.Context
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
@@ -8,12 +8,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bondoman.database.entity.TransactionEntity
 import com.example.bondoman.databinding.ItemTransactionBinding
+import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.Currency
+import java.util.Locale
+
 
 class TransactionAdapter(
-    val ctx: Context,
+    private val ctx: Activity,
     private val tsList: List<TransactionEntity>
 ): RecyclerView.Adapter<TransactionAdapter.ViewHolder>() {
-
     inner class ViewHolder(val view: ItemTransactionBinding): RecyclerView.ViewHolder(view.root)
     private lateinit var binding: ItemTransactionBinding
 
@@ -27,15 +31,25 @@ class TransactionAdapter(
             tvDate.text = tsList[position].timestamp.split(" ")[0]
             tvCategory.text = tsList[position].category
             tvTitle.text = tsList[position].title
-            tvAmount.text = tsList[position].amount.toString()
-            // TODO: location
-            tvLocation.text = tsList[position].amount.toString()
+
+            val formatter: NumberFormat = NumberFormat.getNumberInstance(Locale("id", "ID"))
+            val amount = "Rp${formatter.format(tsList[position].amount)}"
+            tvAmount.text = amount
+
+            // TODO: Reverse Geocoding
+            tvLocation.text = tsList[position].location
+
             btnLocation.setOnClickListener {
                 // TODO: location
                 val gmapsIntentUri = Uri.parse("geo:46.414382,10.013988")
                 val mapIntent = Intent(Intent.ACTION_VIEW, gmapsIntentUri)
                 mapIntent.setPackage("com.google.android.apps.maps")
                 ctx.startActivity(mapIntent)
+            }
+
+            // TODO: edit fragment
+            btnEdit.setOnClickListener {
+
             }
         }
     }
