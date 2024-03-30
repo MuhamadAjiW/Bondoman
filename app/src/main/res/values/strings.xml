@@ -41,10 +41,13 @@
     <string name="save_toast_success">File saved</string>
     <string name="settings_toast_uninitialized_viewmodel">Error: Data Unavailable</string>
 
-    <string-array name="category_choices">
-        <item>Income</item>
-        <item>Expenses</item>
-    </string-array>
+    <string name="excel_dialog_label">Choose excel format</string>
+    <string name="excel_dialog_positive">Confirm</string>
+    <string name="excel_dialog_negative">Cancel</string>
+
+    <string name="delete_confirm_dialog_label">Are you sure to delete this transaction?</string>
+    <string name="delete_confirm_dialog_positive">Confirm</string>
+    <string name="delete_confirm_dialog_negative">Cancel</string>
 
     <string name="take_photo">Take Photo</string>
     <string name="select_photo">Select Photo</string>
@@ -54,4 +57,9 @@
     <string name="scan_add_toast_success">Successfully added new transactions</string>
     <string name="scan_add_toast_failed">Failed to add new transactions</string>
     <string name="scan_enable_camera">Please camera to access this feature</string>
+
+    <string-array name="category_choices">
+        <item>Income</item>
+        <item>Expenses</item>
+    </string-array>
 </resources>
