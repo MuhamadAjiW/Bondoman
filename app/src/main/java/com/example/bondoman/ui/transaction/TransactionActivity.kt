@@ -138,6 +138,18 @@ class TransactionActivity : AppCompatActivity() {
             }
         }
 
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ),
+                2
+            )
+        }
+
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location? ->
                 locationViewModel.setLoc(location?.latitude, location?.longitude)
