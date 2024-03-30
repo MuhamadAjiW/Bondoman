@@ -6,11 +6,11 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.bondoman.R
 import com.example.bondoman.database.entity.TransactionEntity
 import com.example.bondoman.databinding.ItemTransactionBinding
-import java.text.DecimalFormat
+import com.example.bondoman.ui.transaction.TransactionActivity
 import java.text.NumberFormat
-import java.util.Currency
 import java.util.Locale
 
 
@@ -47,12 +47,25 @@ class TransactionAdapter(
                 ctx.startActivity(mapIntent)
             }
 
-            // TODO: edit fragment
             btnEdit.setOnClickListener {
+                val intent = Intent(ctx, TransactionActivity::class.java)
+                intent.putExtra(TransactionActivity.actionKey, TransactionActivity.ACTION_EDIT)
 
+                // Pass all data
+                // TODO: Consider serializing or just pass the id and read it from the transaction page. Might offer better performance though
+                intent.putExtra(TransactionActivity.transactionIdKey, tsList[position].id)
+                intent.putExtra(TransactionActivity.titleKey, tsList[position].title)
+                intent.putExtra(TransactionActivity.amountKey, tsList[position].amount)
+                intent.putExtra(TransactionActivity.categoryKey, ctx.resources.getStringArray(R.array.category_choices).indexOf(tsList[position].category))
+                intent.putExtra(TransactionActivity.locationKey, tsList[position].location)
+                intent.putExtra(TransactionActivity.timestampKey, tsList[position].timestamp)
+
+                ctx.startActivity(intent)
             }
         }
     }
+
+
 
     override fun getItemCount(): Int {
         return tsList.size

@@ -22,6 +22,7 @@ class TransactionActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTransactionBinding
     private lateinit var transactionViewModel: TransactionViewModel
     private var actionCode: Int = 0
+    private var transactionId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
@@ -44,12 +45,12 @@ class TransactionActivity : AppCompatActivity() {
 
         // Initialize initial values
         val titleInitial = intent.getStringExtra(titleKey)
-        val amountInitial = intent.getStringExtra(amountKey)
+        val amountInitial = intent.getIntExtra(amountKey, 0)
         val categoryInitial = intent.getIntExtra(categoryKey, 0)
         val locationInitial = intent.getStringExtra(locationKey)
 
         binding.titleInput.setText(titleInitial)
-        binding.amountInput.setText(amountInitial)
+        binding.amountInput.setText(amountInitial.toString())
         binding.categoryInput.setSelection(categoryInitial, true)
         binding.locationInput.setText(locationInitial)
 
@@ -57,7 +58,9 @@ class TransactionActivity : AppCompatActivity() {
         (binding.categoryInput.selectedView as TextView).setTextColor(ContextCompat.getColor(this, R.color.black))
 
         actionCode = intent.getIntExtra(actionKey, 0)
+        transactionId = intent.getIntExtra(transactionIdKey, 0)
 
+        if(actionCode == ACTION_EDIT) binding.categoryInput.isEnabled = false
     }
 
     // Header back button
@@ -65,11 +68,12 @@ class TransactionActivity : AppCompatActivity() {
         onBackPressed()
     }
 
-    // TODO: Handle edits
     private fun onSubmitClick(view: View){
         val title = binding.titleInput.text.toString()
         val category = binding.categoryInput.selectedItem.toString()
         val amount = binding.amountInput.text.toString()
+        // TODO: Location
+        val location = binding.locationInput.text.toString()
 
         if (title.isEmpty()){
             Toast.makeText(this, getString(R.string.transaction_add_toast_error_title), Toast.LENGTH_SHORT).show()
@@ -78,20 +82,35 @@ class TransactionActivity : AppCompatActivity() {
             Toast.makeText(this, getString(R.string.transaction_add_toast_error_amount), Toast.LENGTH_SHORT).show()
         }
         else{
-            transactionViewModel.insert(
-                TransactionEntity(
-                    id = 0,
-                    title = title,
-                    category = category,
-                    amount = amount.toInt(),
-                    // TODO: Location
-                    location = binding.locationInput.text.toString(),
-                    timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-                )
-            )
-            Toast.makeText(this, getString(R.string.transaction_add_toast_success), Toast.LENGTH_SHORT).show()
-//                TODO: Delete, this is for testing purposes
-//                transactionViewModel.deleteAll()
+            when (actionCode){
+                ACTION_ADD ->{
+                        transactionViewModel.insert(
+                            TransactionEntity(
+                                id = 0,
+                                title = title,
+                                category = category,
+                                amount = amount.toInt(),
+                                location = location,
+                                timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+                            )
+                        )
+                        Toast.makeText(this, getString(R.string.transaction_add_toast_success), Toast.LENGTH_SHORT).show()
+                    }
+
+                ACTION_EDIT ->{
+                    transactionViewModel.update(
+                        TransactionEntity(
+                            id = intent.getIntExtra(transactionIdKey, 0),
+                            title = title,
+                            category = category,
+                            amount = amount.toInt(),
+                            location = location,
+                            timestamp = intent.getStringExtra(timestampKey)!!
+                        )
+                    )
+                    Toast.makeText(this, getString(R.string.transaction_edit_toast_success), Toast.LENGTH_SHORT).show()
+                }
+            }
             onBackPressed()
         }
     }
@@ -101,7 +120,10 @@ class TransactionActivity : AppCompatActivity() {
         val amountKey = "Amount"
         val categoryKey = "Category"
         val locationKey = "Location"
+
         val actionKey = "Action"
+        val transactionIdKey = "TransactionId"
+        val timestampKey = "Timestamp"
 
         val ACTION_ADD = 0
         val ACTION_EDIT = 1
