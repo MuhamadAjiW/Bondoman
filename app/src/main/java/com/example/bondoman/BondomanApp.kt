@@ -1,7 +1,6 @@
 package com.example.bondoman
 
 import android.app.Application
-import android.content.Intent
 import android.content.IntentFilter
 import com.example.bondoman.database.AppDatabase
 import com.example.bondoman.ui.transaction.RandomBroadcastReceiver

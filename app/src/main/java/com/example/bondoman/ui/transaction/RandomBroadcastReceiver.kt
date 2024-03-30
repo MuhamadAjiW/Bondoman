@@ -12,7 +12,7 @@ class RandomBroadcastReceiver : BroadcastReceiver() {
         randomIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         randomIntent.putExtra(TransactionActivity.titleKey, "apa")
         randomIntent.putExtra(TransactionActivity.amountKey, "Seharga apa")
-        randomIntent.putExtra(TransactionActivity.categoryKey, TransactionActivity.locationKey)
+        randomIntent.putExtra(TransactionActivity.categoryKey, TransactionActivity.CATEGORY_INCOME)
         randomIntent.putExtra(TransactionActivity.locationKey, "Ada di mana")
         context?.startActivity(randomIntent)
     }
