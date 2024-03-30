@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -146,11 +147,13 @@ class ScanFragment : Fragment() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireActivity())
         cameraProviderFuture.addListener({
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-            val preview = Preview.Builder().build().also {
-                it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
-            }
+            val preview =
+                Preview.Builder().setTargetAspectRatio(AspectRatio.RATIO_16_9).build().also {
+                    it.setSurfaceProvider(binding.viewFinder.surfaceProvider)
+                }
 
-            imageCapture = ImageCapture.Builder().build()
+            imageCapture =
+                ImageCapture.Builder().setTargetAspectRatio(AspectRatio.RATIO_16_9).build()
 
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 

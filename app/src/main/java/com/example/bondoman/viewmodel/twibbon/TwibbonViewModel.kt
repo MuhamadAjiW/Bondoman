@@ -21,7 +21,7 @@ class TwibbonViewModel : ViewModel() {
         const val TWIBBON_OFFSET_LEFT = 0F
     }
 
-    fun saveImageWithOverlay(image: ImageProxy, twibbon: Bitmap, context: Context) {
+    fun saveImageWithOverlay(image: ImageProxy, twibbon: Bitmap, context: Context): Boolean {
         val imageBitmap = image.toBitmap().copy(Bitmap.Config.ARGB_8888, true)
 
         val matrix = Matrix()
@@ -57,6 +57,7 @@ class TwibbonViewModel : ViewModel() {
                     outputStream.close()
                 } catch (e: Exception) {
                     e.printStackTrace()
+                    return false
                 }
             }
             values.put(MediaStore.Images.Media.IS_PENDING, false)
@@ -64,5 +65,7 @@ class TwibbonViewModel : ViewModel() {
                 uri, values, null, null
             )
         }
+
+        return true
     }
 }

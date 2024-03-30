@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
@@ -156,9 +157,21 @@ class TwibbonFragment : Fragment() {
 
                 override fun onCaptureSuccess(image: ImageProxy) {
                     val twibbon = binding.ivTwibbon.drawable.toBitmap()
-                    twibbonViewModel.saveImageWithOverlay(
+                    val success = twibbonViewModel.saveImageWithOverlay(
                         image, twibbon, requireActivity().baseContext
                     )
+
+                    if (success) {
+                        Toast.makeText(
+                            requireActivity(),
+                            getString(R.string.twibbon_add_toast_success),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            requireActivity(), getString(R.string.scan_add_toast_failed), Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             })
     }
