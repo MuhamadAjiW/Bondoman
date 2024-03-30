@@ -50,6 +50,7 @@ class HubActivity : AppCompatActivity() {
                 setOf(
                     R.id.hub_nav_transaction,
                     R.id.hub_nav_scan,
+                    R.id.hub_nav_twibbon,
                     R.id.hub_nav_stats,
                     R.id.hub_nav_settings,
                 )
@@ -70,6 +71,7 @@ class HubActivity : AppCompatActivity() {
                 setOf(
                     R.id.hub_nav_transaction,
                     R.id.hub_nav_scan,
+                    R.id.hub_nav_twibbon,
                     R.id.hub_nav_stats,
                     R.id.hub_nav_settings,
                 )

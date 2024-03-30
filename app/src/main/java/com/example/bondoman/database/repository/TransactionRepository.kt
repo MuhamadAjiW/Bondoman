@@ -42,7 +42,7 @@ class TransactionRepository(private val transactionDao: TransactionDao) {
         try {
             // TODO: Get stored auth token
             val authToken =
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaW0iOiIxMzUyMTE0OSIsImlhdCI6MTcxMTY0NTMzNSwiZXhwIjoxNzExNjQ1NjM1fQ.UHiJv3jBIgNdWLSxlTa2G_gwOjhmss2MCD1zrFxaRdc"
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaW0iOiIxMzUyMTE0OSIsImlhdCI6MTcxMTgxNTE1OCwiZXhwIjoxNzExODE1NDU4fQ.mASnON98EJmGWmVMdjWB47ef3pwYIVJelaYMpMjy_BY"
             val response = RetrofitClient.uploadInstance.uploadImage(
                 MultipartBody.Part.createFormData(
                     "file", "test", imageReqBody
@@ -50,6 +50,7 @@ class TransactionRepository(private val transactionDao: TransactionDao) {
             )
 
             if (!response.isSuccessful) {
+                Log.d(TAG, response.code().toString())
                 return false
             }
 
