@@ -2,7 +2,6 @@ package com.example.bondoman.ui.hub.transaction
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,17 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bondoman.R
-import com.example.bondoman.database.entity.TransactionEntity
 import com.example.bondoman.databinding.FragmentTransactionBinding
 import com.example.bondoman.ui.hub.HubActivity
 import com.example.bondoman.ui.transaction.TransactionActivity
 import com.example.bondoman.viewmodel.transaction.TransactionViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import kotlin.math.log
 
-class TransactionFragment : Fragment() {
+class TransactionFragment : Fragment(){
     private lateinit var binding: FragmentTransactionBinding
     private lateinit var tsViewModel: TransactionViewModel
 
@@ -47,7 +41,7 @@ class TransactionFragment : Fragment() {
         }
 
         tsViewModel.list.observe(viewLifecycleOwner) { tsList ->
-            val adapter = TransactionAdapter(requireActivity(), tsList)
+            val adapter = TransactionAdapter(requireContext(), this.parentFragmentManager, tsViewModel, tsList)
             binding.rvTransaction.adapter = adapter
         }
     }

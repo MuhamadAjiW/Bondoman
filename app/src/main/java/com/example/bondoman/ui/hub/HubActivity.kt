@@ -6,9 +6,8 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.viewbinding.ViewBinding
 import com.example.bondoman.R
 import com.example.bondoman.database.AppDatabase
 import com.example.bondoman.database.repository.TransactionRepository
@@ -20,12 +19,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationView
 
 class HubActivity : AppCompatActivity() {
-    private lateinit var portrait_binding: ActivityHubBinding
-    private lateinit var landscape_binding: ActivityHubLandscapeBinding
+    private lateinit var viewBinding: ViewBinding
     lateinit var transactionViewModel: TransactionViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar?.hide()
 
         // Initialize database
         val database = AppDatabase.getInstance(this)
@@ -37,46 +34,24 @@ class HubActivity : AppCompatActivity() {
         // Initialize navbar and fragments
         val orientation = resources.configuration.orientation
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            landscape_binding = ActivityHubLandscapeBinding.inflate(layoutInflater)
-            setContentView(landscape_binding.root)
+            viewBinding = ActivityHubLandscapeBinding.inflate(layoutInflater)
+            setContentView(viewBinding.root)
 
             // Initialize header
-            landscape_binding.headerContentLandscape.navBackButton.visibility = View.GONE
+            (viewBinding as ActivityHubLandscapeBinding).headerContentLandscape.navBackButton.visibility = View.GONE
 
-
-            val navView: NavigationView = landscape_binding.navViewLandscape
+            val navView: NavigationView = (viewBinding as ActivityHubLandscapeBinding).navViewLandscape
             val navController = findNavController(R.id.nav_host_fragment_activity_main)
-            val appBarConfiguration = AppBarConfiguration(
-                setOf(
-                    R.id.hub_nav_transaction,
-                    R.id.hub_nav_scan,
-                    R.id.hub_nav_twibbon,
-                    R.id.hub_nav_stats,
-                    R.id.hub_nav_settings,
-                )
-            )
-            setupActionBarWithNavController(navController, appBarConfiguration)
             navView.setupWithNavController(navController)
         } else {
-            portrait_binding = ActivityHubBinding.inflate(layoutInflater)
-            setContentView(portrait_binding.root)
+            viewBinding = ActivityHubBinding.inflate(layoutInflater)
+            setContentView(viewBinding.root)
 
             // Initialize header
-            portrait_binding.headerContent.navBackButton.visibility = View.GONE
+            (viewBinding as ActivityHubBinding).headerContent.navBackButton.visibility = View.GONE
 
-
-            val navView: BottomNavigationView = portrait_binding.navView
+            val navView: BottomNavigationView = (viewBinding as ActivityHubBinding).navView
             val navController = findNavController(R.id.nav_host_fragment_activity_main)
-            val appBarConfiguration = AppBarConfiguration(
-                setOf(
-                    R.id.hub_nav_transaction,
-                    R.id.hub_nav_scan,
-                    R.id.hub_nav_twibbon,
-                    R.id.hub_nav_stats,
-                    R.id.hub_nav_settings,
-                )
-            )
-            setupActionBarWithNavController(navController, appBarConfiguration)
             navView.setupWithNavController(navController)
         }
     }

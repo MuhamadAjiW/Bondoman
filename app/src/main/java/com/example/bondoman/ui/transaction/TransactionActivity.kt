@@ -1,6 +1,5 @@
 package com.example.bondoman.ui.transaction
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
@@ -21,10 +20,12 @@ import java.util.Locale
 
 class TransactionActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTransactionBinding
+    private lateinit var transactionViewModel: TransactionViewModel
+    private var actionCode: Int = 0
+    private var transactionId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
-        supportActionBar?.hide()
 
         binding = ActivityTransactionBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -33,55 +34,101 @@ class TransactionActivity : AppCompatActivity() {
         val database = AppDatabase.getInstance(this)
         val transactionRepo = TransactionRepository(database.transactionDao)
         val transactionModelFactory = TransactionViewModelFactory(transactionRepo)
-        val transactionViewModel = ViewModelProvider(this, transactionModelFactory)[TransactionViewModel::class.java]
+        transactionViewModel = ViewModelProvider(this, transactionModelFactory)[TransactionViewModel::class.java]
 
         // Initialize header
         binding.header.navTitle.text = getString(R.string.hub_nav_transaction)
         val backButton = binding.header.navBackButton
-        backButton.setOnClickListener(::onBackClick)
-
-        // Initialize category dropdown
-        val spinner = binding.categoryInput
-        spinner.setSelection(0, true);
-        (spinner.selectedView as TextView).setTextColor(ContextCompat.getColor(this, R.color.black))
-
-        // Initialize category dropdown
         val submitButton = binding.submitButton
+        backButton.setOnClickListener(::onBackClick)
+        submitButton.setOnClickListener(::onSubmitClick)
 
-        // Create on click
-        submitButton.setOnClickListener {
-            val title = binding.titleInput.text.toString()
-            val category = binding.categoryInput.selectedItem.toString()
-            val amount = binding.amountInput.text.toString()
+        // Initialize initial values
+        val titleInitial = intent.getStringExtra(KEY_TITLE)
+        val amountInitial = intent.getIntExtra(KEY_AMOUNT, 0)
+        val categoryInitial = intent.getIntExtra(KEY_CATEGORY, 0)
+        val locationInitial = intent.getStringExtra(KEY_LOCATION)
 
-            if (title.isEmpty()){
-                Toast.makeText(this, getString(R.string.transaction_add_toast_error_title), Toast.LENGTH_SHORT).show()
-            }
-            else if (amount.isEmpty()){
-                Toast.makeText(this, getString(R.string.transaction_add_toast_error_amount), Toast.LENGTH_SHORT).show()
-            }
-            else{
-                transactionViewModel.insert(
-                    TransactionEntity(
-                        id = 0,
-                        title = title,
-                        category = category,
-                        amount = amount.toInt(),
-                        // TODO: Location
-                        location = binding.locationInput.text.toString(),
-                        timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-                    )
-                )
-                Toast.makeText(this, getString(R.string.transaction_add_toast_success), Toast.LENGTH_SHORT).show()
-//                TODO: Delete, this is for testing purposes
-//                transactionViewModel.deleteAll()
-                onBackPressed()
-            }
-        }
+        binding.titleInput.setText(titleInitial)
+        binding.amountInput.setText(amountInitial.toString())
+        binding.categoryInput.setSelection(categoryInitial, true)
+        binding.locationInput.setText(locationInitial)
+
+        // Initialize category dropdown color
+        (binding.categoryInput.selectedView as TextView).setTextColor(ContextCompat.getColor(this, R.color.black))
+
+        actionCode = intent.getIntExtra(KEY_ACTION, 0)
+        transactionId = intent.getIntExtra(KEY_TRANSACTION_ID, 0)
+
+        if(actionCode == ACTION_EDIT) binding.categoryInput.isEnabled = false
     }
 
     // Header back button
     private fun onBackClick(view: View) {
         onBackPressed()
+    }
+
+    private fun onSubmitClick(view: View){
+        val title = binding.titleInput.text.toString()
+        val category = binding.categoryInput.selectedItem.toString()
+        val amount = binding.amountInput.text.toString()
+        // TODO: Location
+        val location = binding.locationInput.text.toString()
+
+        if (title.isEmpty()){
+            Toast.makeText(this, getString(R.string.transaction_add_toast_error_title), Toast.LENGTH_SHORT).show()
+        }
+        else if (amount.isEmpty()){
+            Toast.makeText(this, getString(R.string.transaction_add_toast_error_amount), Toast.LENGTH_SHORT).show()
+        }
+        else{
+            when (actionCode){
+                ACTION_ADD ->{
+                        transactionViewModel.insert(
+                            TransactionEntity(
+                                id = 0,
+                                title = title,
+                                category = category,
+                                amount = amount.toInt(),
+                                location = location,
+                                timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+                            )
+                        )
+                        Toast.makeText(this, getString(R.string.transaction_add_toast_success), Toast.LENGTH_SHORT).show()
+                    }
+
+                ACTION_EDIT ->{
+                    transactionViewModel.update(
+                        TransactionEntity(
+                            id = intent.getIntExtra(KEY_TRANSACTION_ID, 0),
+                            title = title,
+                            category = category,
+                            amount = amount.toInt(),
+                            location = location,
+                            timestamp = intent.getStringExtra(KEY_TIMESTAMP)!!
+                        )
+                    )
+                    Toast.makeText(this, getString(R.string.transaction_edit_toast_success), Toast.LENGTH_SHORT).show()
+                }
+            }
+            onBackPressed()
+        }
+    }
+
+    companion object{
+        const val KEY_TITLE = "Title"
+        const val KEY_AMOUNT = "Amount"
+        const val KEY_CATEGORY = "Category"
+        const val KEY_LOCATION = "Location"
+
+        const val KEY_ACTION = "Action"
+        const val KEY_TRANSACTION_ID = "TransactionId"
+        const val KEY_TIMESTAMP = "Timestamp"
+
+        const val ACTION_ADD = 0
+        const val ACTION_EDIT = 1
+
+        const val CATEGORY_INCOME = 0
+        const val CATEGORY_EXPENSES = 1
     }
 }

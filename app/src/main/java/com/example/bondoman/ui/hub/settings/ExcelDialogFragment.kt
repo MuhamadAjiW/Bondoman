@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
+import com.example.bondoman.R
 
 class ExcelDialogFragment : DialogFragment() {
     internal lateinit var listener: ExcelDialogListener
@@ -19,9 +20,9 @@ class ExcelDialogFragment : DialogFragment() {
         return activity?.let {
             val builder = AlertDialog.Builder(it)
             builder
-                .setTitle("Excel format")
-                .setPositiveButton("Confirm", DialogInterface.OnClickListener { _, index -> listener.onExcelDialogPositiveClick(this)})
-                .setNegativeButton("Cancel", DialogInterface.OnClickListener { _, index -> listener.onExcelDialogNegativeClick(this)})
+                .setTitle(R.string.excel_dialog_label)
+                .setPositiveButton(R.string.excel_dialog_positive, DialogInterface.OnClickListener { _, _ -> listener.onExcelDialogPositiveClick(this)})
+                .setNegativeButton(R.string.excel_dialog_negative, DialogInterface.OnClickListener { _, _ -> listener.onExcelDialogNegativeClick(this)})
                 .setSingleChoiceItems(
                     arrayOf(".xlsx", ".xls"), 0
                 ) { _, index -> listener.onExcelDialogChoiceClick(this, index) }

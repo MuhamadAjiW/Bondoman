@@ -76,6 +76,16 @@
         app:layout_constraintEnd_toStartOf="@+id/btnEdit"
         app:layout_constraintTop_toBottomOf="@+id/tvAmount" />
 
+    <Button
+        android:id="@+id/btnDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:backgroundTint="@color/red"
+        app:layout_constraintBottom_toBottomOf="@+id/btnLocation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnLocation" />
+
     <ImageView
         android:id="@+id/locationIcon"
         android:layout_width="16dp"

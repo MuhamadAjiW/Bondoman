@@ -10,16 +10,16 @@ data class TransactionEntity (
     val id: Int,
 
     @ColumnInfo(name = "title")
-    val title: String,
+    var title: String,
 
     @ColumnInfo(name = "category")
-    val category: String,
+    var category: String,
 
     @ColumnInfo(name = "amount")
-    val amount: Int,
+    var amount: Int,
 
     @ColumnInfo(name = "location")
-    val location: String,
+    var location: String,
 
     @ColumnInfo(name = "timestamp")
     val timestamp: String,

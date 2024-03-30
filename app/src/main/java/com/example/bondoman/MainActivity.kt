@@ -9,7 +9,6 @@ import com.example.bondoman.ui.login.LoginActivity
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
-        supportActionBar?.hide()
         splashScreen()
 
         val intent: Intent = if(loginCheck()){
