@@ -2,7 +2,10 @@ package com.example.bondoman.ui.hub.transaction
 
 import android.content.Context
 import android.content.Intent
+import android.location.Geocoder
+import android.location.Geocoder.GeocodeListener
 import android.net.Uri
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +32,11 @@ class TransactionAdapter(
     private lateinit var binding: ItemTransactionBinding
     private val deleteConfirmDialog: DeleteConfirmDialogFragment = DeleteConfirmDialogFragment()
 
+    companion object {
+        val locale: Locale = Locale("id", "ID")
+    }
+    private val geocoder = Geocoder(context, locale)
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         binding = ItemTransactionBinding.inflate(LayoutInflater.from(context), parent, false)
         deleteConfirmDialog.listener = this
@@ -41,14 +49,28 @@ class TransactionAdapter(
             tvCategory.text = tsList[position].category
             tvTitle.text = tsList[position].title
 
-            val formatter: NumberFormat = NumberFormat.getNumberInstance(Locale("id", "ID"))
+            val formatter: NumberFormat = NumberFormat.getNumberInstance(locale)
             val amount = "Rp${formatter.format(tsList[position].amount)}"
             tvAmount.text = amount
 
-            // TODO: Reverse Geocoding
-            var locStr = context.getString(R.string.no_location_data)
+            var location = context.getString(R.string.no_location_data)
             if (tsList[position].latitude != null && tsList[position].longitude != null) {
-                locStr = "(${tsList[position].latitude}, ${tsList[position].longitude})"
+                location = "(${tsList[position].latitude}, ${tsList[position].longitude})"
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    geocoder.getFromLocation(
+                        tsList[position].latitude!!,
+                        tsList[position].longitude!!,
+                        1,
+                        (GeocodeListener {
+                            if (it.size > 0) {
+                                tvLocation.text = it[0].locality.toString()
+                            }
+                        })
+                    )
+                } else {
+                    tvLocation.text = location
+                }
 
                 btnLocation.visibility = View.VISIBLE
                 tvLocation.visibility = View.VISIBLE
@@ -66,9 +88,6 @@ class TransactionAdapter(
                 context.startActivity(mapIntent)
             }
 
-            tvLocation.text = locStr
-
-
             btnEdit.setOnClickListener {
                 val intent = Intent(context, TransactionActivity::class.java)
                 intent.putExtra(TransactionActivity.KEY_ACTION, TransactionActivity.ACTION_EDIT)
@@ -78,7 +97,7 @@ class TransactionAdapter(
                 intent.putExtra(TransactionActivity.KEY_TITLE, tsList[position].title)
                 intent.putExtra(TransactionActivity.KEY_AMOUNT, tsList[position].amount)
                 intent.putExtra(TransactionActivity.KEY_CATEGORY, context.resources.getStringArray(R.array.category_choices).indexOf(tsList[position].category))
-                intent.putExtra(TransactionActivity.KEY_LOCATION, locStr)
+                intent.putExtra(TransactionActivity.KEY_LOCATION, location)
                 intent.putExtra(TransactionActivity.KEY_TIMESTAMP, tsList[position].timestamp)
 
                 context.startActivity(intent)
