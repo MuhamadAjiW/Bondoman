@@ -20,8 +20,8 @@ class DeleteConfirmDialogFragment : DialogFragment() {
             val builder = AlertDialog.Builder(it)
             builder
                 .setTitle(R.string.delete_confirm_dialog_label)
-                .setPositiveButton(R.string.delete_confirm_dialog_positive, DialogInterface.OnClickListener { _, index -> listener.onDeleteDialogPositiveClick(this)})
-                .setNegativeButton(R.string.delete_confirm_dialog_negative, DialogInterface.OnClickListener { _, index -> listener.onDeleteDialogNegativeClick(this)})
+                .setPositiveButton(R.string.delete_confirm_dialog_positive, DialogInterface.OnClickListener { _, _ -> listener.onDeleteDialogPositiveClick(this)})
+                .setNegativeButton(R.string.delete_confirm_dialog_negative, DialogInterface.OnClickListener { _, _ -> listener.onDeleteDialogNegativeClick(this)})
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }

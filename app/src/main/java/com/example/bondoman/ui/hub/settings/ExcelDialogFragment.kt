@@ -21,8 +21,8 @@ class ExcelDialogFragment : DialogFragment() {
             val builder = AlertDialog.Builder(it)
             builder
                 .setTitle(R.string.excel_dialog_label)
-                .setPositiveButton(R.string.excel_dialog_positive, DialogInterface.OnClickListener { _, index -> listener.onExcelDialogPositiveClick(this)})
-                .setNegativeButton(R.string.excel_dialog_negative, DialogInterface.OnClickListener { _, index -> listener.onExcelDialogNegativeClick(this)})
+                .setPositiveButton(R.string.excel_dialog_positive, DialogInterface.OnClickListener { _, _ -> listener.onExcelDialogPositiveClick(this)})
+                .setNegativeButton(R.string.excel_dialog_negative, DialogInterface.OnClickListener { _, _ -> listener.onExcelDialogNegativeClick(this)})
                 .setSingleChoiceItems(
                     arrayOf(".xlsx", ".xls"), 0
                 ) { _, index -> listener.onExcelDialogChoiceClick(this, index) }

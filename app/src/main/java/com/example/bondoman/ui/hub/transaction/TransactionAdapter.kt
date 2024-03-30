@@ -57,15 +57,15 @@ class TransactionAdapter(
 
             btnEdit.setOnClickListener {
                 val intent = Intent(context, TransactionActivity::class.java)
-                intent.putExtra(TransactionActivity.actionKey, TransactionActivity.ACTION_EDIT)
+                intent.putExtra(TransactionActivity.KEY_ACTION, TransactionActivity.ACTION_EDIT)
 
                 // TODO: Consider serializing or just pass the id and read it from the transaction page. Might offer better performance though
-                intent.putExtra(TransactionActivity.transactionIdKey, tsList[position].id)
-                intent.putExtra(TransactionActivity.titleKey, tsList[position].title)
-                intent.putExtra(TransactionActivity.amountKey, tsList[position].amount)
-                intent.putExtra(TransactionActivity.categoryKey, context.resources.getStringArray(R.array.category_choices).indexOf(tsList[position].category))
-                intent.putExtra(TransactionActivity.locationKey, tsList[position].location)
-                intent.putExtra(TransactionActivity.timestampKey, tsList[position].timestamp)
+                intent.putExtra(TransactionActivity.KEY_TRANSACTION_ID, tsList[position].id)
+                intent.putExtra(TransactionActivity.KEY_TITLE, tsList[position].title)
+                intent.putExtra(TransactionActivity.KEY_AMOUNT, tsList[position].amount)
+                intent.putExtra(TransactionActivity.KEY_CATEGORY, context.resources.getStringArray(R.array.category_choices).indexOf(tsList[position].category))
+                intent.putExtra(TransactionActivity.KEY_LOCATION, tsList[position].location)
+                intent.putExtra(TransactionActivity.KEY_TIMESTAMP, tsList[position].timestamp)
 
                 context.startActivity(intent)
             }

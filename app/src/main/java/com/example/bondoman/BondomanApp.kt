@@ -18,6 +18,6 @@ class BondomanApp : Application() {
 
     // Global statics should be here
     companion object{
-        val ACTION_RANDOM_TRANSACTION = "com.example.bondoman.ACTION_RANDOM_TRANSACTION"
+        const val ACTION_RANDOM_TRANSACTION = "com.example.bondoman.ACTION_RANDOM_TRANSACTION"
     }
 }

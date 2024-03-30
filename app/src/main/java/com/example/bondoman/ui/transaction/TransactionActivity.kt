@@ -44,10 +44,10 @@ class TransactionActivity : AppCompatActivity() {
         submitButton.setOnClickListener(::onSubmitClick)
 
         // Initialize initial values
-        val titleInitial = intent.getStringExtra(titleKey)
-        val amountInitial = intent.getIntExtra(amountKey, 0)
-        val categoryInitial = intent.getIntExtra(categoryKey, 0)
-        val locationInitial = intent.getStringExtra(locationKey)
+        val titleInitial = intent.getStringExtra(KEY_TITLE)
+        val amountInitial = intent.getIntExtra(KEY_AMOUNT, 0)
+        val categoryInitial = intent.getIntExtra(KEY_CATEGORY, 0)
+        val locationInitial = intent.getStringExtra(KEY_LOCATION)
 
         binding.titleInput.setText(titleInitial)
         binding.amountInput.setText(amountInitial.toString())
@@ -57,8 +57,8 @@ class TransactionActivity : AppCompatActivity() {
         // Initialize category dropdown color
         (binding.categoryInput.selectedView as TextView).setTextColor(ContextCompat.getColor(this, R.color.black))
 
-        actionCode = intent.getIntExtra(actionKey, 0)
-        transactionId = intent.getIntExtra(transactionIdKey, 0)
+        actionCode = intent.getIntExtra(KEY_ACTION, 0)
+        transactionId = intent.getIntExtra(KEY_TRANSACTION_ID, 0)
 
         if(actionCode == ACTION_EDIT) binding.categoryInput.isEnabled = false
     }
@@ -100,12 +100,12 @@ class TransactionActivity : AppCompatActivity() {
                 ACTION_EDIT ->{
                     transactionViewModel.update(
                         TransactionEntity(
-                            id = intent.getIntExtra(transactionIdKey, 0),
+                            id = intent.getIntExtra(KEY_TRANSACTION_ID, 0),
                             title = title,
                             category = category,
                             amount = amount.toInt(),
                             location = location,
-                            timestamp = intent.getStringExtra(timestampKey)!!
+                            timestamp = intent.getStringExtra(KEY_TIMESTAMP)!!
                         )
                     )
                     Toast.makeText(this, getString(R.string.transaction_edit_toast_success), Toast.LENGTH_SHORT).show()
@@ -116,19 +116,19 @@ class TransactionActivity : AppCompatActivity() {
     }
 
     companion object{
-        val titleKey = "Title"
-        val amountKey = "Amount"
-        val categoryKey = "Category"
-        val locationKey = "Location"
+        const val KEY_TITLE = "Title"
+        const val KEY_AMOUNT = "Amount"
+        const val KEY_CATEGORY = "Category"
+        const val KEY_LOCATION = "Location"
 
-        val actionKey = "Action"
-        val transactionIdKey = "TransactionId"
-        val timestampKey = "Timestamp"
+        const val KEY_ACTION = "Action"
+        const val KEY_TRANSACTION_ID = "TransactionId"
+        const val KEY_TIMESTAMP = "Timestamp"
 
-        val ACTION_ADD = 0
-        val ACTION_EDIT = 1
+        const val ACTION_ADD = 0
+        const val ACTION_EDIT = 1
 
-        val CATEGORY_INCOME = 0
-        val CATEGORY_EXPENSES = 1
+        const val CATEGORY_INCOME = 0
+        const val CATEGORY_EXPENSES = 1
     }
 }

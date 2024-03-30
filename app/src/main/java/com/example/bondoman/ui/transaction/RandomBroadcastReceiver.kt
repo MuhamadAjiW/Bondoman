@@ -10,10 +10,10 @@ class RandomBroadcastReceiver : BroadcastReceiver() {
         //TODO: Randomizer
         val randomIntent = Intent(context, TransactionActivity::class.java)
         randomIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        randomIntent.putExtra(TransactionActivity.titleKey, "apa")
-        randomIntent.putExtra(TransactionActivity.amountKey, 0)
-        randomIntent.putExtra(TransactionActivity.categoryKey, TransactionActivity.CATEGORY_INCOME)
-        randomIntent.putExtra(TransactionActivity.locationKey, "Ada di mana")
+        randomIntent.putExtra(TransactionActivity.KEY_TITLE, "apa")
+        randomIntent.putExtra(TransactionActivity.KEY_AMOUNT, 0)
+        randomIntent.putExtra(TransactionActivity.KEY_CATEGORY, TransactionActivity.CATEGORY_INCOME)
+        randomIntent.putExtra(TransactionActivity.KEY_LOCATION, "Ada di mana")
         context?.startActivity(randomIntent)
     }
 }

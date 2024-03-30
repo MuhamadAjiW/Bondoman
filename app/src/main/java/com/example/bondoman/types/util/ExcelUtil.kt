@@ -30,9 +30,6 @@ class ExcelUtil(val context: Context) {
             ) + ext
         )
 
-        if(transactionList == null)
-            throw Error(context.getString(R.string.settings_toast_uninitialized_viewmodel))
-
         val workbook = XSSFWorkbook()
         val workSheet = workbook.createSheet("Transactions")
 
