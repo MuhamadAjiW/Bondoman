@@ -6,8 +6,8 @@ import android.content.Intent
 
 class RandomBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-        println("Broadcast received")
 
+        //TODO: Randomizer
         val randomIntent = Intent(context, TransactionActivity::class.java)
         randomIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         randomIntent.putExtra(TransactionActivity.titleKey, "apa")

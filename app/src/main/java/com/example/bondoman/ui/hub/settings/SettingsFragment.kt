@@ -166,7 +166,6 @@ class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
 
 
     private fun onRandomTransactionClick(view: View){
-        println("Sending broadcast!")
         val intent = Intent(BondomanApp.ACTION_RANDOM_TRANSACTION)
         requireContext().sendBroadcast(intent)
     }
