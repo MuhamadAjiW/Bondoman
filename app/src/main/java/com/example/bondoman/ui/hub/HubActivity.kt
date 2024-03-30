@@ -25,7 +25,6 @@ class HubActivity : AppCompatActivity() {
     lateinit var transactionViewModel: TransactionViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar?.hide()
 
         // Initialize database
         val database = AppDatabase.getInstance(this)
@@ -66,15 +65,6 @@ class HubActivity : AppCompatActivity() {
 
             val navView: BottomNavigationView = portrait_binding.navView
             val navController = findNavController(R.id.nav_host_fragment_activity_main)
-            val appBarConfiguration = AppBarConfiguration(
-                setOf(
-                    R.id.hub_nav_transaction,
-                    R.id.hub_nav_scan,
-                    R.id.hub_nav_stats,
-                    R.id.hub_nav_settings,
-                )
-            )
-            setupActionBarWithNavController(navController, appBarConfiguration)
             navView.setupWithNavController(navController)
         }
     }

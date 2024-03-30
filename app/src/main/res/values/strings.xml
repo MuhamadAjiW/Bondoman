@@ -27,6 +27,7 @@
 
     <string name="settings_save_transaction">Save transaction list</string>
     <string name="settings_send_transaction">Send transaction list</string>
+    <string name="settings_random_transaction">Generate random transaction</string>
     <string name="settings_logout">Log out</string>
 
     <string name="email_subject">Bondoman: Transaction Data</string>

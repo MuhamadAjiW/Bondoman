@@ -17,6 +17,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.example.bondoman.BondomanApp
 import com.example.bondoman.R
 import com.example.bondoman.databinding.FragmentSettingsBinding
 import com.example.bondoman.types.enums.ExcelTypes
@@ -47,6 +48,7 @@ class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
         binding.buttonSaveTransaction.setOnClickListener(::onSaveTransactionClick)
         binding.buttonSendTransaction.setOnClickListener(::onSendTransactionClick)
+        binding.buttonRandomTransaction.setOnClickListener(::onRandomTransactionClick)
         binding.buttonLogout.setOnClickListener(::onLogoutClick)
 
         excelUtil = ExcelUtil(requireContext())
@@ -160,6 +162,13 @@ class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
     private fun onSendTransactionClick(view: View){
         buttonCode = ButtonCode.SEND_BUTTON
         excelDialog.show(parentFragmentManager, "excel")
+    }
+
+
+    private fun onRandomTransactionClick(view: View){
+        println("Sending broadcast!")
+        val intent = Intent(BondomanApp.ACTION_RANDOM_TRANSACTION)
+        requireContext().sendBroadcast(intent)
     }
 
     //TODO: Implement
