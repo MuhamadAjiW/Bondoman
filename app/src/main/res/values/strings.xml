@@ -3,6 +3,7 @@
 
     <string name="hub_nav_transaction">Transaction</string>
     <string name="hub_nav_scan">Scan</string>
+    <string name="hub_nav_twibbon">Twibbon</string>
     <string name="hub_nav_stats">Stats</string>
     <string name="hub_nav_settings">Settings</string>
 
@@ -49,14 +50,16 @@
     <string name="delete_confirm_dialog_positive">Confirm</string>
     <string name="delete_confirm_dialog_negative">Cancel</string>
 
+    <string name="scan_nota">Scan Nota</string>
     <string name="take_photo">Take Photo</string>
     <string name="select_photo">Select Photo</string>
-    <string name="start_capture">Start Capture</string>
-    <string name="stop_capture">Stop Capture</string>
 
     <string name="scan_add_toast_success">Successfully added new transactions</string>
     <string name="scan_add_toast_failed">Failed to add new transactions</string>
-    <string name="scan_enable_camera">Please camera to access this feature</string>
+    <string name="scan_enable_camera">Please allow camera permission to access this feature</string>
+
+    <string name="twibbon_add_toast_success">Successfully saved twibbon</string>
+    <string name="twibbon_add_toast_failed">Failed to save twibbon</string>
 
     <string-array name="category_choices">
         <item>Income</item>

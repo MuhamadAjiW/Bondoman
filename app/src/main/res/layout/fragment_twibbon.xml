@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.hub.scan.ScanFragment">
+    tools:context=".ui.hub.twibbon.TwibbonFragment">
 
     <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"
@@ -13,9 +13,15 @@
         app:layout_constraintDimensionRatio="9:16"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp">
+        tools:layout_editor_absoluteY="0dp" />
 
-    </androidx.camera.view.PreviewView>
+    <ImageView
+        android:id="@+id/iv_twibbon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/hub_nav_twibbon"
+        android:src="@drawable/twibbon"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <TextView
         android:id="@+id/text_enable_camera"
@@ -35,22 +41,9 @@
         android:layout_height="110dp"
         android:layout_marginBottom="64dp"
         android:elevation="2dp"
-        android:text="@string/scan_nota"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/select_photo_button"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/select_photo_button"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:layout_marginBottom="64dp"
-        android:elevation="2dp"
-        android:text="@string/select_photo"
+        android:text="@string/take_photo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/image_capture_button" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
