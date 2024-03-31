@@ -70,7 +70,6 @@ class AddTransactionFragment : Fragment() {
             observeLocation(it)
         }
 
-
         // Locate button
         val locateButton = binding.btnLocate
         locateButton.setOnClickListener(::onLocateClick)
@@ -126,10 +125,6 @@ class AddTransactionFragment : Fragment() {
             hubActivity.binding.navViewLandscape.visibility = View.GONE
             hubActivity.binding.navView.visibility = View.VISIBLE
         }
-    }
-    override fun onCreate(savedInstanceState: Bundle?){
-        super.onCreate(savedInstanceState)
-
     }
 
     private fun onDeleteClick(view: View) {

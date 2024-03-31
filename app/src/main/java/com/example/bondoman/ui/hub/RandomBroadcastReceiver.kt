@@ -5,11 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.fragment.findNavController
 import com.example.bondoman.R
 import com.example.bondoman.ui.hub.addtransaction.AddTransactionFragment
 import com.example.bondoman.ui.transaction.TransactionActivity
 
-class RandomBroadcastReceiver(val fragmentManager: FragmentManager) : BroadcastReceiver() {
+class RandomBroadcastReceiver(private val fragmentManager: FragmentManager) : BroadcastReceiver() {
     //TODO: Delete, this is alternative code for using activity
 //    override fun onReceive(context: Context?, intent: Intent?) {
 //        val randomIntent = Intent(context, TransactionActivity::class.java)
@@ -34,7 +35,18 @@ class RandomBroadcastReceiver(val fragmentManager: FragmentManager) : BroadcastR
         val fragment = AddTransactionFragment()
         fragment.arguments = bundle
 
-        transaction.replace(R.id.nav_host_fragment_activity_main, fragment)
+        val navHostFragment = fragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main)
+        navHostFragment?.let {
+            val navController = navHostFragment.findNavController()
+            try {
+                navController.popBackStack()
+            }catch (error: Error){
+                println("NavController don't have extra back stack")
+            }
+        }
+
+        transaction.add(R.id.nav_host_fragment_activity_main, fragment)
+
         transaction.addToBackStack(null)
         transaction.commit()
     }
