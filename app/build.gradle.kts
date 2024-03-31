@@ -41,6 +41,7 @@ android {
 }
 
 dependencies {
+    implementation(files("libs/poishadow-all.jar"))
     val camerax_version = "1.3.0"
 
     implementation("androidx.core:core-ktx:1.6.0")
@@ -50,8 +51,9 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:2.3.5")
     implementation("androidx.room:room-runtime:2.4.0")
     implementation("androidx.room:room-ktx:2.4.0")
-    implementation("org.apache.poi:poi:5.2.0")
-    implementation("org.apache.poi:poi-ooxml:5.2.0")
+//    Implementation is swapped with poishadow-all jar because xls is broken
+//    implementation("org.apache.poi:poi:5.2.0")
+//    implementation("org.apache.poi:poi-ooxml:5.2.0")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     annotationProcessor("androidx.room:room-compiler:2.4.0")
     ksp("androidx.room:room-compiler:2.4.0")
