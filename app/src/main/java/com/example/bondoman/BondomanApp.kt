@@ -12,7 +12,7 @@ class BondomanApp : Application() {
         AppDatabase.getInstance(this)
 
         val filter = IntentFilter(ACTION_RANDOM_TRANSACTION)
-        registerReceiver(randomReceiver, filter)
+        registerReceiver(randomReceiver, filter, RECEIVER_NOT_EXPORTED)
     }
 
     // Global statics should be here

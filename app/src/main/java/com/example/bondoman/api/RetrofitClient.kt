@@ -2,7 +2,6 @@ package com.example.bondoman.api
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 object RetrofitClient {
     private const val BASE_URL = "https://pbd-backend-2024.vercel.app/"
