@@ -6,6 +6,7 @@ import android.location.Geocoder
 import android.location.Geocoder.GeocodeListener
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.bondoman.R
 import com.example.bondoman.database.entity.TransactionEntity
 import com.example.bondoman.databinding.ItemTransactionBinding
-import com.example.bondoman.ui.transaction.TransactionActivity
+import com.example.bondoman.ui.hub.addtransaction.AddTransactionFragment
 import com.example.bondoman.viewmodel.transaction.TransactionViewModel
 import java.text.NumberFormat
 import java.util.Locale
@@ -89,18 +90,24 @@ class TransactionAdapter(
             }
 
             btnEdit.setOnClickListener {
-                val intent = Intent(context, TransactionActivity::class.java)
-                intent.putExtra(TransactionActivity.KEY_ACTION, TransactionActivity.ACTION_EDIT)
+                val bundle = Bundle()
+                bundle.putInt(AddTransactionFragment.KEY_ACTION, AddTransactionFragment.ACTION_EDIT)
 
                 // TODO: Consider serializing or just pass the id and read it from the transaction page. Might offer better performance though
-                intent.putExtra(TransactionActivity.KEY_TRANSACTION_ID, tsList[position].id)
-                intent.putExtra(TransactionActivity.KEY_TITLE, tsList[position].title)
-                intent.putExtra(TransactionActivity.KEY_AMOUNT, tsList[position].amount)
-                intent.putExtra(TransactionActivity.KEY_CATEGORY, context.resources.getStringArray(R.array.category_choices).indexOf(tsList[position].category))
-                intent.putExtra(TransactionActivity.KEY_LOCATION, location)
-                intent.putExtra(TransactionActivity.KEY_TIMESTAMP, tsList[position].timestamp)
+                bundle.putInt(AddTransactionFragment.KEY_TRANSACTION_ID, tsList[position].id)
+                bundle.putString(AddTransactionFragment.KEY_TITLE, tsList[position].title)
+                bundle.putInt(AddTransactionFragment.KEY_AMOUNT, tsList[position].amount)
+                bundle.putInt(AddTransactionFragment.KEY_CATEGORY, context.resources.getStringArray(R.array.category_choices).indexOf(tsList[position].category))
+                bundle.putString(AddTransactionFragment.KEY_LOCATION, location)
+                bundle.putString(AddTransactionFragment.KEY_TIMESTAMP, tsList[position].timestamp)
 
-                context.startActivity(intent)
+                val transaction = fragmentManager.beginTransaction()
+                val fragment = AddTransactionFragment()
+                fragment.arguments = bundle
+
+                transaction.replace(R.id.nav_host_fragment_activity_main, fragment)
+                transaction.addToBackStack(null)
+                transaction.commit()
             }
 
             btnDelete.setOnClickListener {

@@ -96,6 +96,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tvAmount"
         app:layout_constraintEnd_toStartOf="@+id/tvLocation"
         app:layout_constraintTop_toTopOf="@+id/tvAmount"
+        android:tint="?android:textColorPrimary"
         app:srcCompat="@drawable/ic_hub_location" />
 
     <TextView
