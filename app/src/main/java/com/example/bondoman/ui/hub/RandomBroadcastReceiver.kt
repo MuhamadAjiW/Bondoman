@@ -8,17 +8,48 @@ import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
 import com.example.bondoman.R
 import com.example.bondoman.ui.hub.addtransaction.AddTransactionFragment
+import net.datafaker.Faker
 
 class RandomBroadcastReceiver(private val fragmentManager: FragmentManager) : BroadcastReceiver() {
+
+    companion object {
+        private val faker = Faker()
+
+        private fun titleFaker(): String {
+            when ((1..4).random()) {
+                1 -> return faker.book().title()
+                2 -> return faker.music().instrument()
+                3 -> return faker.videoGame().title()
+                else -> return faker.food().dish()
+            }
+        }
+
+        private fun categoryFaker(): Int {
+            when((0..1).random()) {
+                0 -> return AddTransactionFragment.CATEGORY_EXPENSES
+                else -> return AddTransactionFragment.CATEGORY_INCOME
+            }
+        }
+
+        private fun amountFaker(): Int {
+            return (1..20000000).random()
+        }
+    }
+
     override fun onReceive(context: Context?, intent: Intent?) {
         val bundle = Bundle()
         bundle.putInt(AddTransactionFragment.KEY_ACTION, AddTransactionFragment.ACTION_ADD)
 
-        // TODO: Consider serializing or just pass the id and read it from the transaction page. Might offer better performance though
-        // TODO: Randomizer
-        bundle.putString(AddTransactionFragment.KEY_TITLE, "apa")
-        bundle.putInt(AddTransactionFragment.KEY_AMOUNT, 0)
-        bundle.putInt(AddTransactionFragment.KEY_CATEGORY, AddTransactionFragment.CATEGORY_INCOME)
+        val category = categoryFaker()
+        var title = titleFaker()
+        if (category == AddTransactionFragment.CATEGORY_INCOME) {
+            title = "Sell $title"
+        } else {
+            title = "Buy $title"
+        }
+        bundle.putString(AddTransactionFragment.KEY_TITLE, title)
+        bundle.putInt(AddTransactionFragment.KEY_AMOUNT, amountFaker())
+        bundle.putInt(AddTransactionFragment.KEY_CATEGORY, category)
 
         val transaction = fragmentManager.beginTransaction()
         val fragment = AddTransactionFragment()
