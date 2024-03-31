@@ -17,6 +17,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.example.bondoman.BondomanApp
 import com.example.bondoman.R
 import com.example.bondoman.database.entity.TransactionEntity
 import com.example.bondoman.databinding.FragmentAddTransactionBinding
@@ -91,12 +92,18 @@ class AddTransactionFragment : Fragment() {
         val titleInitial = arguments?.getString(KEY_TITLE) ?: ""
         val amountInitial = arguments?.getInt(KEY_AMOUNT, 0) ?: 0
         val categoryInitial = arguments?.getInt(KEY_CATEGORY, 0) ?: 0
-        val locationInitial = arguments?.getString(KEY_LOCATION) ?: ""
+        var latInitial = arguments?.getDouble(KEY_LATITUDE)
+        var lngInitial = arguments?.getDouble(KEY_LONGITUDE)
+        if (latInitial == BondomanApp.LOCATION_MARK || lngInitial == BondomanApp.LOCATION_MARK) {
+            latInitial = null
+            lngInitial = null
+        }
+        locationViewModel.setLoc(latInitial, lngInitial)
 
         binding.titleInput.setText(titleInitial)
         binding.amountInput.setText(amountInitial.toString())
         binding.categoryInput.setSelection(categoryInitial, true)
-        binding.locationText.text = locationInitial
+        // location initial already set by observer
 
         // Initialize category dropdown color
         (binding.categoryInput.selectedView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
@@ -107,8 +114,6 @@ class AddTransactionFragment : Fragment() {
 
         if(actionCode == ACTION_EDIT) {
             binding.categoryInput.isEnabled = false
-            locateButton.isEnabled = false
-            deleteButton.isEnabled = false
         }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
@@ -271,7 +276,9 @@ class AddTransactionFragment : Fragment() {
         const val KEY_TITLE = "Title"
         const val KEY_AMOUNT = "Amount"
         const val KEY_CATEGORY = "Category"
-        const val KEY_LOCATION = "Location"
+//        const val KEY_LOCATION = "Location"
+        const val KEY_LATITUDE = "Latitude"
+        const val KEY_LONGITUDE = "Longitude"
 
         const val KEY_ACTION = "Action"
         const val KEY_TRANSACTION_ID = "TransactionId"
