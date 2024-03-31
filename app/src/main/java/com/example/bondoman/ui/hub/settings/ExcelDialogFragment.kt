@@ -2,7 +2,6 @@ package com.example.bondoman.ui.hub.settings
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.example.bondoman.R
@@ -21,11 +20,10 @@ class ExcelDialogFragment : DialogFragment() {
             val builder = AlertDialog.Builder(it)
             builder
                 .setTitle(R.string.excel_dialog_label)
-                .setPositiveButton(R.string.excel_dialog_positive, DialogInterface.OnClickListener { _, _ -> listener.onExcelDialogPositiveClick(this)})
-                .setNegativeButton(R.string.excel_dialog_negative, DialogInterface.OnClickListener { _, _ -> listener.onExcelDialogNegativeClick(this)})
-                .setSingleChoiceItems(
-                    arrayOf(".xlsx", ".xls"), 0
-                ) { _, index -> listener.onExcelDialogChoiceClick(this, index) }
+                .setPositiveButton(R.string.excel_dialog_positive) { _, _ -> listener.onExcelDialogPositiveClick(this) }
+                .setNegativeButton(R.string.excel_dialog_negative) { _, _ -> listener.onExcelDialogNegativeClick(this) }
+                .setSingleChoiceItems(arrayOf(".xlsx", ".xls"), 0)
+                    { _, index -> listener.onExcelDialogChoiceClick(this, index) }
             builder.create()
         } ?: throw IllegalStateException("Activity cannot be null")
     }

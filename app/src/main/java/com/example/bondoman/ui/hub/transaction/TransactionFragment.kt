@@ -1,6 +1,5 @@
 package com.example.bondoman.ui.hub.transaction
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bondoman.R
-import com.example.bondoman.databinding.ActivityHubBinding
-import com.example.bondoman.databinding.ActivityHubLandscapeBinding
 import com.example.bondoman.databinding.FragmentTransactionBinding
 import com.example.bondoman.ui.hub.HubActivity
 import com.example.bondoman.ui.hub.addtransaction.AddTransactionFragment
-import com.example.bondoman.ui.transaction.TransactionActivity
 import com.example.bondoman.viewmodel.transaction.TransactionViewModel
 
 class TransactionFragment : Fragment(){
@@ -48,12 +44,6 @@ class TransactionFragment : Fragment(){
             binding.rvTransaction.adapter = adapter
         }
     }
-
-    //TODO: Delete, this is alternative code for using activity
-//    private fun onAddClick(view: View){
-//        val intent = Intent(requireContext(), TransactionActivity::class.java)
-//        startActivity(intent)
-//    }
 
     private fun onAddClick(view: View){
         val transaction = requireActivity().supportFragmentManager.beginTransaction()

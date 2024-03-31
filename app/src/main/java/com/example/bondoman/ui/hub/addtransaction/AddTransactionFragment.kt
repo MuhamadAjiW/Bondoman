@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -29,7 +30,7 @@ import java.util.Locale
 class AddTransactionFragment : Fragment() {
     private lateinit var binding: FragmentAddTransactionBinding
     private lateinit var hubActivity: HubActivity
-    private lateinit var savedContext: Context;
+    private lateinit var savedContext: Context
     private var actionCode: Int = 0
 
     private lateinit var transactionViewModel: TransactionViewModel
@@ -86,7 +87,7 @@ class AddTransactionFragment : Fragment() {
         val titleInitial = arguments?.getString(KEY_TITLE) ?: ""
         val amountInitial = arguments?.getInt(KEY_AMOUNT, 0) ?: 0
         val categoryInitial = arguments?.getInt(KEY_CATEGORY, 0) ?: 0
-        var locationInitial = arguments?.getString(KEY_LOCATION) ?: ""
+        val locationInitial = arguments?.getString(KEY_LOCATION) ?: ""
 
         binding.titleInput.setText(titleInitial)
         binding.amountInput.setText(amountInitial.toString())
@@ -113,10 +114,16 @@ class AddTransactionFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        println("View destroyed!")
         hubActivity.configurationLock = false
-        val orientation = resources.configuration.orientation
 
+        // Also hide keyboard if it's visible
+        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val currentFocus = requireActivity().currentFocus
+        currentFocus?.let {
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+        }
+
+        val orientation = resources.configuration.orientation
         hubActivity.binding.headerContent.navBackButton.visibility = View.GONE
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             hubActivity.binding.navView.visibility = View.GONE
