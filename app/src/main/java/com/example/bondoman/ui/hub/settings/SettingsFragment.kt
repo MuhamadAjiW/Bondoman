@@ -20,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.bondoman.BondomanApp
 import com.example.bondoman.R
 import com.example.bondoman.databinding.FragmentSettingsBinding
+import com.example.bondoman.services.SessionManager
 import com.example.bondoman.types.enums.ExcelTypes
 import com.example.bondoman.types.util.ExcelUtil
 import com.example.bondoman.ui.login.LoginActivity
@@ -39,6 +40,7 @@ class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
     private val excelDialog: ExcelDialogFragment = ExcelDialogFragment()
     private var excelFormat: ExcelTypes = ExcelTypes.XLSX
     private var buttonCode: ButtonCode = ButtonCode.SAVE_BUTTON
+    private lateinit var sessionManager: SessionManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,6 +54,7 @@ class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
         binding.buttonLogout.setOnClickListener(::onLogoutClick)
 
         excelUtil = ExcelUtil(requireContext())
+        sessionManager = SessionManager(requireContext())
         excelDialog.listener = this
 
         return binding.root
@@ -172,6 +175,7 @@ class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
 
     //TODO: Implement
     private fun onLogoutClick(view: View){
+        sessionManager.clearToken()
         val intent = Intent(requireContext(), LoginActivity::class.java)
         startActivity(intent)
         requireActivity().finish()
