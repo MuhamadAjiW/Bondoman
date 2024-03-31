@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.hub.transaction.TransactionFragment">
+    tools:context=".ui.hub.transaction.TransactionFragment"
+    android:background="?attr/background">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_transaction"

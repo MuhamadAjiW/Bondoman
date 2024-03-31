@@ -10,13 +10,18 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.bondoman.R
+import com.example.bondoman.databinding.ActivityHubBinding
+import com.example.bondoman.databinding.ActivityHubLandscapeBinding
 import com.example.bondoman.databinding.FragmentTransactionBinding
 import com.example.bondoman.ui.hub.HubActivity
+import com.example.bondoman.ui.hub.addtransaction.AddTransactionFragment
 import com.example.bondoman.ui.transaction.TransactionActivity
 import com.example.bondoman.viewmodel.transaction.TransactionViewModel
 
 class TransactionFragment : Fragment(){
     private lateinit var binding: FragmentTransactionBinding
+    private lateinit var activityPortraitBinding: ActivityHubBinding
+    private lateinit var activityLandscapeBinding: ActivityHubLandscapeBinding
     private lateinit var tsViewModel: TransactionViewModel
 
     override fun onCreateView(
@@ -36,7 +41,7 @@ class TransactionFragment : Fragment(){
         tsViewModel = (requireActivity() as HubActivity).transactionViewModel
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            val header = requireActivity().findViewById<TextView>(R.id.nav_title)
+            val header = (requireActivity() as HubActivity).findViewById<TextView>(R.id.nav_title)
             header.text = getString(R.string.hub_nav_transaction)
         }
 
@@ -46,8 +51,16 @@ class TransactionFragment : Fragment(){
         }
     }
 
+//    private fun onAddClick(view: View){
+//        val intent = Intent(requireContext(), TransactionActivity::class.java)
+//        startActivity(intent)
+//    }
+
     private fun onAddClick(view: View){
-        val intent = Intent(requireContext(), TransactionActivity::class.java)
-        startActivity(intent)
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        val fragment = AddTransactionFragment()
+        transaction.replace(R.id.nav_host_fragment_activity_main, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 }
