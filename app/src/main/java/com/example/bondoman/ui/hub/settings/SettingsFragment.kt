@@ -30,11 +30,13 @@ import java.util.Date
 import java.util.Locale
 
 class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
+
     internal enum class ButtonCode{
         SAVE_BUTTON,
         SEND_BUTTON
     }
 
+    private lateinit var transactionViewModel: TransactionViewModel
     private lateinit var binding: FragmentSettingsBinding
     private lateinit var excelUtil: ExcelUtil
     private val excelDialog: ExcelDialogFragment = ExcelDialogFragment()
@@ -56,6 +58,8 @@ class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
         excelUtil = ExcelUtil(requireContext())
         sessionManager = SessionManager(requireContext())
         excelDialog.listener = this
+
+        transactionViewModel = ViewModelProvider(requireActivity()).get(TransactionViewModel::class.java)
 
         return binding.root
     }
@@ -89,7 +93,6 @@ class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
     }
 
     private fun saveExcel(){
-        val transactionViewModel = ViewModelProvider(requireActivity()).get(TransactionViewModel::class.java)
         transactionViewModel.list.observe(viewLifecycleOwner) { transactionList ->
             try {
                 val file = excelUtil.exportTransaction(
@@ -113,7 +116,6 @@ class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
     }
 
     private fun sendExcel(){
-        val transactionViewModel = ViewModelProvider(requireActivity()).get(TransactionViewModel::class.java)
         transactionViewModel.list.observe(viewLifecycleOwner) { transactionList ->
             try {
                 val file = excelUtil.exportTransaction(
