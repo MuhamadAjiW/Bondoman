@@ -49,6 +49,7 @@ class TransactionFragment : Fragment(){
         }
     }
 
+    //TODO: Delete, this is alternative code for using activity
 //    private fun onAddClick(view: View){
 //        val intent = Intent(requireContext(), TransactionActivity::class.java)
 //        startActivity(intent)

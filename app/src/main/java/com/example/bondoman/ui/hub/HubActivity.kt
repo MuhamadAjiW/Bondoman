@@ -1,31 +1,27 @@
 package com.example.bondoman.ui.hub
 
+import android.content.IntentFilter
 import android.content.res.Configuration
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.example.bondoman.BondomanApp
 import com.example.bondoman.R
 import com.example.bondoman.database.AppDatabase
 import com.example.bondoman.database.repository.TransactionRepository
 import com.example.bondoman.databinding.ActivityHubBinding
-import com.example.bondoman.databinding.ActivityHubLandscapeBinding
 import com.example.bondoman.viewmodel.transaction.LocationViewModel
 import com.example.bondoman.viewmodel.transaction.LocationViewModelFactory
 import com.example.bondoman.viewmodel.transaction.TransactionViewModel
 import com.example.bondoman.viewmodel.transaction.TransactionViewModelFactory
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.navigation.NavigationView
 
 class HubActivity : AppCompatActivity() {
+    private val randomReceiver = RandomBroadcastReceiver(supportFragmentManager)
+
     lateinit var binding: ActivityHubBinding
     lateinit var transactionViewModel: TransactionViewModel
     lateinit var locationViewModel: LocationViewModel
@@ -64,6 +60,16 @@ class HubActivity : AppCompatActivity() {
         } else {
             binding.navViewLandscape.visibility = View.GONE
             binding.navView.visibility = View.VISIBLE
+        }
+
+
+        // Setup broadcast receiver
+        val filter = IntentFilter(BondomanApp.ACTION_RANDOM_TRANSACTION)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(randomReceiver, filter, RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(randomReceiver, filter)
         }
     }
 

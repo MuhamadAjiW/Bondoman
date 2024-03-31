@@ -114,6 +114,7 @@ class AddTransactionFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        println("View destroyed!")
         hubActivity.configurationLock = false
         val orientation = resources.configuration.orientation
 
