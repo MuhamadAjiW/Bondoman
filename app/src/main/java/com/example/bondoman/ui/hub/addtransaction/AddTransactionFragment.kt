@@ -4,7 +4,9 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.location.Geocoder
 import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -41,10 +43,12 @@ class AddTransactionFragment : Fragment() {
     private var savedLat: Double? = null
     private var savedLng: Double? = null
 
+    private lateinit var geocoder: Geocoder
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         savedContext = requireContext()
+        geocoder = Geocoder(savedContext, Locale("id", "ID"))
     }
 
     override fun onCreateView(
@@ -195,7 +199,20 @@ class AddTransactionFragment : Fragment() {
         savedLng = lng
 
         if (lat != null && lng != null) {
-            binding.locationText.text = loc.toString()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                geocoder.getFromLocation(
+                    lat,
+                    lng,
+                    1,
+                    (Geocoder.GeocodeListener {
+                        if (it.size > 0) {
+                            binding.locationText.text = it[0].locality.toString()
+                        }
+                    })
+                )
+            } else {
+                binding.locationText.text = loc.toString()
+            }
         } else {
             binding.locationText.text = savedContext.getString(R.string.no_location_data)
         }
