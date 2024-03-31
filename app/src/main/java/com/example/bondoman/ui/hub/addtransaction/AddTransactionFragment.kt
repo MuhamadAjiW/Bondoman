@@ -1,6 +1,7 @@
 package com.example.bondoman.ui.hub.addtransaction
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.location.Location
@@ -28,14 +29,22 @@ import java.util.Locale
 class AddTransactionFragment : Fragment() {
     private lateinit var binding: FragmentAddTransactionBinding
     private lateinit var hubActivity: HubActivity
-    private lateinit var transactionViewModel: TransactionViewModel
+    private lateinit var savedContext: Context;
     private var actionCode: Int = 0
+
+    private lateinit var transactionViewModel: TransactionViewModel
     private var transactionId: Int = 0
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationViewModel: LocationViewModel
     private var savedLat: Double? = null
     private var savedLng: Double? = null
+
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        savedContext = requireContext()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -132,10 +141,10 @@ class AddTransactionFragment : Fragment() {
 
     private fun getLastLocation() {
         if (ActivityCompat.checkSelfPermission(
-                requireContext(),
+                savedContext,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                requireContext(),
+                savedContext,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
@@ -148,10 +157,10 @@ class AddTransactionFragment : Fragment() {
             )
 
             if (ActivityCompat.checkSelfPermission(
-                    requireContext(),
+                    savedContext,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    requireContext(),
+                    savedContext,
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED) {
 
@@ -160,7 +169,7 @@ class AddTransactionFragment : Fragment() {
         }
 
         if (ActivityCompat.checkSelfPermission(
-                requireContext(),
+                savedContext,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(hubActivity,
@@ -185,7 +194,7 @@ class AddTransactionFragment : Fragment() {
         if (lat != null && lng != null) {
             binding.locationText.text = loc.toString()
         } else {
-            binding.locationText.text = requireContext().getString(R.string.no_location_data)
+            binding.locationText.text = savedContext.getString(R.string.no_location_data)
         }
     }
 
@@ -195,10 +204,10 @@ class AddTransactionFragment : Fragment() {
         val amount = binding.amountInput.text.toString()
 
         if (title.isEmpty()){
-            Toast.makeText(requireContext(), requireContext().getString(R.string.transaction_add_toast_error_title), Toast.LENGTH_SHORT).show()
+            Toast.makeText(savedContext, savedContext.getString(R.string.transaction_add_toast_error_title), Toast.LENGTH_SHORT).show()
         }
         else if (amount.isEmpty()){
-            Toast.makeText(requireContext(), requireContext().getString(R.string.transaction_add_toast_error_amount), Toast.LENGTH_SHORT).show()
+            Toast.makeText(savedContext, savedContext.getString(R.string.transaction_add_toast_error_amount), Toast.LENGTH_SHORT).show()
         }
         else{
             when (actionCode){
@@ -216,7 +225,7 @@ class AddTransactionFragment : Fragment() {
                             longitude = savedLng
                         )
                     )
-                    Toast.makeText(requireContext(), requireContext().getString(R.string.transaction_add_toast_success), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(savedContext, savedContext.getString(R.string.transaction_add_toast_success), Toast.LENGTH_SHORT).show()
                 }
 
                 ACTION_EDIT -> {
@@ -231,7 +240,7 @@ class AddTransactionFragment : Fragment() {
                             longitude = savedLng
                         )
                     )
-                    Toast.makeText(requireContext(), requireContext().getString(R.string.transaction_edit_toast_success), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(savedContext, savedContext.getString(R.string.transaction_edit_toast_success), Toast.LENGTH_SHORT).show()
                 }
             }
             hubActivity.onBackPressed()
