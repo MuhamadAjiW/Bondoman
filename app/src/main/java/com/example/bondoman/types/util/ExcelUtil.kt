@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.bondoman.R
 import com.example.bondoman.database.entity.TransactionEntity
 import com.example.bondoman.types.enums.ExcelTypes
+import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import org.apache.poi.ss.usermodel.BorderStyle
 import org.apache.poi.ss.usermodel.FillPatternType
 import org.apache.poi.ss.usermodel.IndexedColors
@@ -14,6 +15,12 @@ import java.util.Date
 import java.util.Locale
 
 class ExcelUtil(val context: Context) {
+    init {
+        System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl")
+        System.setProperty("org.apache.poi.javax.xml.stream.XMLOutputFactory", "com.fasterxml.aalto.stax.OutputFactoryImpl")
+        System.setProperty("org.apache.poi.javax.xml.stream.XMLEventFactory", "com.fasterxml.aalto.stax.EventFactoryImpl")
+    }
+
     fun exportTransaction(
         transactionList: List<TransactionEntity>,
         type: ExcelTypes,
@@ -23,23 +30,25 @@ class ExcelUtil(val context: Context) {
             ExcelTypes.XLS -> ".xls"
             ExcelTypes.XLSX -> ".xlsx"
         }
+        val workbook = when (type){
+            ExcelTypes.XLS -> HSSFWorkbook()
+            ExcelTypes.XLSX -> XSSFWorkbook()
+        }
         val file = File(
             path,
             "BondomanTransaction" + SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault()).format(
                 Date()
             ) + ext
         )
-
-        val workbook = XSSFWorkbook()
         val workSheet = workbook.createSheet("Transactions")
 
         val headerCellStyle = workbook.createCellStyle()
-        headerCellStyle.setFillForegroundColor(IndexedColors.LIGHT_GREEN.index)
-        headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND)
-        headerCellStyle.setBorderTop(BorderStyle.THIN)
-        headerCellStyle.setBorderBottom(BorderStyle.THIN)
-        headerCellStyle.setBorderLeft(BorderStyle.THIN)
-        headerCellStyle.setBorderRight(BorderStyle.THIN)
+        headerCellStyle.fillForegroundColor = IndexedColors.LIGHT_GREEN.index
+        headerCellStyle.fillPattern = FillPatternType.SOLID_FOREGROUND
+        headerCellStyle.borderTop = BorderStyle.THIN
+        headerCellStyle.borderBottom = BorderStyle.THIN
+        headerCellStyle.borderLeft = BorderStyle.THIN
+        headerCellStyle.borderRight = BorderStyle.THIN
 
         val headers = arrayOf(
             context.getString(R.string.transaction_label_number),
@@ -50,8 +59,9 @@ class ExcelUtil(val context: Context) {
             context.getString(R.string.transaction_label_timestamp)
         )
 
-        val cellStyle = headerCellStyle.copy()
-        cellStyle.setFillForegroundColor(IndexedColors.WHITE.index)
+        val cellStyle = workbook.createCellStyle()
+        cellStyle.cloneStyleFrom(headerCellStyle)
+        cellStyle.fillForegroundColor = IndexedColors.WHITE.index
         cellStyle.wrapText = true
 
         val firstRow = workSheet.createRow(0)
