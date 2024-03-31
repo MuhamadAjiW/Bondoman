@@ -6,14 +6,11 @@ import android.content.Intent
 
 class RandomBroadcastReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
-
-        //TODO: Randomizer
         val randomIntent = Intent(context, TransactionActivity::class.java)
         randomIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         randomIntent.putExtra(TransactionActivity.KEY_TITLE, "apa")
         randomIntent.putExtra(TransactionActivity.KEY_AMOUNT, 0)
         randomIntent.putExtra(TransactionActivity.KEY_CATEGORY, TransactionActivity.CATEGORY_INCOME)
-        randomIntent.putExtra(TransactionActivity.KEY_LOCATION, "Ada di mana")
         context?.startActivity(randomIntent)
     }
 }

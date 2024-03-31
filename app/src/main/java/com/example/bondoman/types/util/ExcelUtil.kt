@@ -55,7 +55,8 @@ class ExcelUtil(val context: Context) {
             context.getString(R.string.transaction_label_title),
             context.getString(R.string.transaction_label_category),
             context.getString(R.string.transaction_label_amount),
-            context.getString(R.string.transaction_label_location),
+            context.getString(R.string.latitude),
+            context.getString(R.string.longitude),
             context.getString(R.string.transaction_label_timestamp)
         )
 
@@ -94,10 +95,14 @@ class ExcelUtil(val context: Context) {
             cell.cellStyle = cellStyle
 
             cell = row.createCell(4)
-            cell.setCellValue(transaction.location)
+            transaction.latitude?.let { cell.setCellValue(it) }
             cell.cellStyle = cellStyle
 
             cell = row.createCell(5)
+            transaction.longitude?.let { cell.setCellValue(it) }
+            cell.cellStyle = cellStyle
+
+            cell = row.createCell(6)
             cell.setCellValue(transaction.timestamp)
             cell.cellStyle = cellStyle
         }

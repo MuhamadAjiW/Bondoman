@@ -13,13 +13,11 @@
         android:id="@+id/divider1"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:background="@color/gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLocation"
-        tools:layout_editor_absoluteX="20dp" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tvDate"
@@ -62,29 +60,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Edit"
-        app:layout_constraintBottom_toBottomOf="@+id/btnLocation"
+        app:layout_constraintBottom_toBottomOf="@+id/btnDelete"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnLocation" />
+        app:layout_constraintTop_toTopOf="@+id/btnDelete" />
 
     <Button
         android:id="@+id/btnLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="10dp"
         android:text="View Location"
+        app:layout_constraintBottom_toBottomOf="@+id/btnDelete"
         app:layout_constraintEnd_toStartOf="@+id/btnEdit"
-        app:layout_constraintTop_toBottomOf="@+id/tvAmount" />
+        app:layout_constraintTop_toTopOf="@+id/btnDelete" />
 
     <Button
         android:id="@+id/btnDelete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:backgroundTint="@color/red"
-        app:layout_constraintBottom_toBottomOf="@+id/btnLocation"
+        android:text="Delete"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btnLocation" />
+        app:layout_constraintTop_toBottomOf="@+id/tvAmount" />
 
     <ImageView
         android:id="@+id/locationIcon"
@@ -113,9 +113,9 @@
         android:id="@+id/tvLocation"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:text="TextView"
         android:ellipsize="end"
         android:maxLines="1"
+        android:text="TextView"
         app:layout_constraintBottom_toBottomOf="@+id/locationIcon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/locationIcon" />

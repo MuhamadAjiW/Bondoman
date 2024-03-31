@@ -55,25 +55,32 @@ class StatsFragment : Fragment() {
     }
 
     private fun setupChart() {
-        binding.pieChart.setUsePercentValues(true)
-        binding.pieChart.description.isEnabled = false
-        binding.pieChart.setExtraOffsets(5f, 3f, 5f, 3f)
-        binding.pieChart.dragDecelerationFrictionCoef = 0.95f
+        binding.pieChart.apply {
+            setUsePercentValues(true)
+            description.isEnabled = false
+            setExtraOffsets(5f, 3f, 5f, 3f)
+            dragDecelerationFrictionCoef = 0.95f
 
-        binding.pieChart.isDrawHoleEnabled = true
-        binding.pieChart.setHoleColor(ContextCompat.getColor(requireActivity(), R.color.white))
-        binding.pieChart.holeRadius = 50f
-        binding.pieChart.setDrawCenterText(true)
+            isDrawHoleEnabled = true
+            setHoleColor(ContextCompat.getColor(requireActivity(), R.color.white))
+            holeRadius = 50f
+            setDrawCenterText(true)
 
-        binding.pieChart.rotationAngle = 0f
-        binding.pieChart.isRotationEnabled = true
-        binding.pieChart.isHighlightPerTapEnabled = true
-        binding.pieChart.animateY(1400, Easing.EaseInOutQuad)
+            rotationAngle = 0f
+            isRotationEnabled = true
+            isHighlightPerTapEnabled = true
+            animateY(1400, Easing.EaseInOutQuad)
 
-        binding.pieChart.legend.isEnabled = true
-        binding.pieChart.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
-        binding.pieChart.setEntryLabelColor(ContextCompat.getColor(requireActivity(), R.color.white))
-        binding.pieChart.setEntryLabelTextSize(12f)
+            legend.isEnabled = true
+            legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+            setEntryLabelColor(
+                ContextCompat.getColor(
+                    requireActivity(),
+                    R.color.white
+                )
+            )
+            setEntryLabelTextSize(12f)
+        }
     }
 
     private fun observeChart(tsList: List<TransactionEntity>) {
