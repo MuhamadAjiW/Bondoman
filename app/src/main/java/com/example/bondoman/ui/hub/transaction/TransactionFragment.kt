@@ -20,8 +20,6 @@ import com.example.bondoman.viewmodel.transaction.TransactionViewModel
 
 class TransactionFragment : Fragment(){
     private lateinit var binding: FragmentTransactionBinding
-    private lateinit var activityPortraitBinding: ActivityHubBinding
-    private lateinit var activityLandscapeBinding: ActivityHubLandscapeBinding
     private lateinit var tsViewModel: TransactionViewModel
 
     override fun onCreateView(
