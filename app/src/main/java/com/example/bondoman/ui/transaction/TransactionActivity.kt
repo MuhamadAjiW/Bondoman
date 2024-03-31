@@ -1,42 +1,38 @@
-package com.example.bondoman.ui.hub.addtransaction
+package com.example.bondoman.ui.transaction
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
-import android.content.res.Configuration
-import android.location.Geocoder
 import android.location.Location
+import android.location.Geocoder
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.example.bondoman.BondomanApp
 import com.example.bondoman.R
+import com.example.bondoman.database.AppDatabase
 import com.example.bondoman.database.entity.TransactionEntity
-import com.example.bondoman.databinding.FragmentAddTransactionBinding
-import com.example.bondoman.ui.hub.HubActivity
+import com.example.bondoman.database.repository.TransactionRepository
+import com.example.bondoman.databinding.ActivityTransactionBinding
 import com.example.bondoman.viewmodel.transaction.LocationViewModel
+import com.example.bondoman.viewmodel.transaction.LocationViewModelFactory
 import com.example.bondoman.viewmodel.transaction.TransactionViewModel
+import com.example.bondoman.viewmodel.transaction.TransactionViewModelFactory
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class AddTransactionFragment : Fragment() {
-    private lateinit var binding: FragmentAddTransactionBinding
-    private lateinit var hubActivity: HubActivity
-    private lateinit var savedContext: Context
-    private var actionCode: Int = 0
-
+class TransactionActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityTransactionBinding
     private lateinit var transactionViewModel: TransactionViewModel
+    private var actionCode: Int = 0
     private var transactionId: Int = 0
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -46,35 +42,31 @@ class AddTransactionFragment : Fragment() {
 
     private lateinit var geocoder: Geocoder
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        savedContext = requireContext()
-        geocoder = Geocoder(savedContext, Locale("id", "ID"))
-    }
+    override fun onCreate(savedInstanceState: Bundle?){
+        super.onCreate(savedInstanceState)
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        super.onCreateView(inflater, container, savedInstanceState)
+        binding = ActivityTransactionBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // Initialize view
-        binding = FragmentAddTransactionBinding.inflate(layoutInflater)
-        hubActivity = requireActivity() as HubActivity
-        hubActivity.configurationLock = true
-        hubActivity.binding.navView.visibility = View.GONE
-        hubActivity.binding.navViewLandscape.visibility = View.GONE
-        hubActivity.binding.headerContent.navBackButton.visibility = View.VISIBLE
+        // Initialize database
+        val database = AppDatabase.getInstance(this)
+        val transactionRepo = TransactionRepository(database.transactionDao)
+        val transactionModelFactory = TransactionViewModelFactory(transactionRepo)
+        transactionViewModel = ViewModelProvider(this, transactionModelFactory)[TransactionViewModel::class.java]
 
-        // Initialize viewmodel
-        transactionViewModel = hubActivity.transactionViewModel
-        locationViewModel = hubActivity.locationViewModel
+        // Initialize geocoder
+        geocoder = Geocoder(this, Locale("id", "ID"))
 
-        // Observe location
-        locationViewModel.location.observe(hubActivity) {
+        // Location VM
+        val locationModelFactory = LocationViewModelFactory()
+        locationViewModel = ViewModelProvider(this, locationModelFactory)[LocationViewModel::class.java]
+        locationViewModel.location.observe(this) {
             observeLocation(it)
         }
+
+        // Initialize header
+        binding.header.navTitle.text = getString(R.string.hub_nav_transaction)
+        binding.header.navBackButton.setOnClickListener(::onBackClick)
 
         // Locate button
         val locateButton = binding.btnLocate
@@ -89,58 +81,38 @@ class AddTransactionFragment : Fragment() {
         submitButton.setOnClickListener(::onSubmitClick)
 
         // Initialize initial values
-        val titleInitial = arguments?.getString(KEY_TITLE) ?: ""
-        val amountInitial = arguments?.getInt(KEY_AMOUNT, 0) ?: 0
-        val categoryInitial = arguments?.getInt(KEY_CATEGORY, 0) ?: 0
-        var latInitial = arguments?.getDouble(KEY_LATITUDE)
-        var lngInitial = arguments?.getDouble(KEY_LONGITUDE)
+        val titleInitial = intent.getStringExtra(KEY_TITLE)
+        val amountInitial = intent.getIntExtra(KEY_AMOUNT, 0)
+        val categoryInitial = intent.getIntExtra(KEY_CATEGORY, 0)
+        var latInitial: Double? = intent.getDoubleExtra(KEY_LATITUDE, BondomanApp.LOCATION_MARK)
+        var lngInitial: Double? = intent.getDoubleExtra(KEY_LONGITUDE, BondomanApp.LOCATION_MARK)
         if (latInitial == BondomanApp.LOCATION_MARK || lngInitial == BondomanApp.LOCATION_MARK) {
             latInitial = null
             lngInitial = null
         }
-        locationViewModel.setLoc(latInitial, lngInitial)
 
         binding.titleInput.setText(titleInitial)
         binding.amountInput.setText(amountInitial.toString())
         binding.categoryInput.setSelection(categoryInitial, true)
-        // location initial already set by observer
+        locationViewModel.setLoc(latInitial, lngInitial)
 
         // Initialize category dropdown color
-        (binding.categoryInput.selectedView as TextView).setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+        (binding.categoryInput.selectedView as TextView).setTextColor(ContextCompat.getColor(this, R.color.black))
 
-        // Get action codes
-        actionCode = arguments?.getInt(KEY_ACTION, 0) ?: 0
-        transactionId = arguments?.getInt(KEY_TRANSACTION_ID, 0) ?: 0
+        actionCode = intent.getIntExtra(KEY_ACTION, 0)
+        transactionId = intent.getIntExtra(KEY_TRANSACTION_ID, 0)
 
-        if(actionCode == ACTION_EDIT) {
+        if(actionCode == ACTION_EDIT){
             binding.categoryInput.isEnabled = false
+            binding.btnLocate.isEnabled = false
+            binding.btnDelete.isEnabled = false
+
+            binding.categoryInput.setBackgroundColor(resources.getColor(R.color.gray_500, theme))
+            binding.btnLocate.backgroundTintList = resources.getColorStateList(R.color.gray_500, theme)
+            binding.btnDelete.backgroundTintList = resources.getColorStateList(R.color.gray_500, theme)
         }
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-
-        return binding.root
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        hubActivity.configurationLock = false
-
-        // Also hide keyboard if it's visible
-        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        val currentFocus = requireActivity().currentFocus
-        currentFocus?.let {
-            imm.hideSoftInputFromWindow(it.windowToken, 0)
-        }
-
-        val orientation = resources.configuration.orientation
-        hubActivity.binding.headerContent.navBackButton.visibility = View.GONE
-        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            hubActivity.binding.navView.visibility = View.GONE
-            hubActivity.binding.navViewLandscape.visibility = View.VISIBLE
-        } else {
-            hubActivity.binding.navViewLandscape.visibility = View.GONE
-            hubActivity.binding.navView.visibility = View.VISIBLE
-        }
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
     }
 
     private fun onDeleteClick(view: View) {
@@ -151,16 +123,20 @@ class AddTransactionFragment : Fragment() {
         getLastLocation()
     }
 
+    private fun onBackClick(view: View) {
+        onBackPressed()
+    }
+
     private fun getLastLocation() {
         if (ActivityCompat.checkSelfPermission(
-                savedContext,
+                this,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                savedContext,
+                this,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(hubActivity,
+            ActivityCompat.requestPermissions(this,
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION,
                     Manifest.permission.ACCESS_COARSE_LOCATION
@@ -169,10 +145,10 @@ class AddTransactionFragment : Fragment() {
             )
 
             if (ActivityCompat.checkSelfPermission(
-                    savedContext,
+                    this,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                    savedContext,
+                    this,
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED) {
 
@@ -181,10 +157,10 @@ class AddTransactionFragment : Fragment() {
         }
 
         if (ActivityCompat.checkSelfPermission(
-                savedContext,
+                this,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(hubActivity,
+            ActivityCompat.requestPermissions(this,
                 arrayOf(
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ),
@@ -219,7 +195,7 @@ class AddTransactionFragment : Fragment() {
                 binding.locationText.text = loc.toString()
             }
         } else {
-            binding.locationText.text = savedContext.getString(R.string.no_location_data)
+            binding.locationText.text = getString(R.string.no_location_data)
         }
     }
 
@@ -229,10 +205,10 @@ class AddTransactionFragment : Fragment() {
         val amount = binding.amountInput.text.toString()
 
         if (title.isEmpty()){
-            Toast.makeText(savedContext, savedContext.getString(R.string.transaction_add_toast_error_title), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.transaction_add_toast_error_title), Toast.LENGTH_SHORT).show()
         }
         else if (amount.isEmpty()){
-            Toast.makeText(savedContext, savedContext.getString(R.string.transaction_add_toast_error_amount), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.transaction_add_toast_error_amount), Toast.LENGTH_SHORT).show()
         }
         else{
             when (actionCode){
@@ -243,32 +219,30 @@ class AddTransactionFragment : Fragment() {
                             title = title,
                             category = category,
                             amount = amount.toInt(),
-                            timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(
-                                Date()
-                            ),
+                            timestamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date()),
                             latitude = savedLat,
                             longitude = savedLng
                         )
                     )
-                    Toast.makeText(savedContext, savedContext.getString(R.string.transaction_add_toast_success), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.transaction_add_toast_success), Toast.LENGTH_SHORT).show()
                 }
 
                 ACTION_EDIT -> {
                     transactionViewModel.update(
                         TransactionEntity(
-                            id = requireArguments().getInt(KEY_TRANSACTION_ID, 0),
+                            id = intent.getIntExtra(KEY_TRANSACTION_ID, 0),
                             title = title,
                             category = category,
                             amount = amount.toInt(),
-                            timestamp = requireArguments().getString(KEY_TIMESTAMP)!!,
+                            timestamp = intent.getStringExtra(KEY_TIMESTAMP)!!,
                             latitude = savedLat,
                             longitude = savedLng
                         )
                     )
-                    Toast.makeText(savedContext, savedContext.getString(R.string.transaction_edit_toast_success), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.transaction_edit_toast_success), Toast.LENGTH_SHORT).show()
                 }
             }
-            hubActivity.onBackPressed()
+            onBackPressed()
         }
     }
 
@@ -276,7 +250,6 @@ class AddTransactionFragment : Fragment() {
         const val KEY_TITLE = "Title"
         const val KEY_AMOUNT = "Amount"
         const val KEY_CATEGORY = "Category"
-//        const val KEY_LOCATION = "Location"
         const val KEY_LATITUDE = "Latitude"
         const val KEY_LONGITUDE = "Longitude"
 

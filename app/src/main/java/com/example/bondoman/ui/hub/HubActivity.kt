@@ -11,6 +11,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.bondoman.BondomanApp
 import com.example.bondoman.R
+import com.example.bondoman.RandomBroadcastReceiver
 import com.example.bondoman.database.AppDatabase
 import com.example.bondoman.database.repository.TransactionRepository
 import com.example.bondoman.databinding.ActivityHubBinding
@@ -20,8 +21,6 @@ import com.example.bondoman.viewmodel.transaction.TransactionViewModel
 import com.example.bondoman.viewmodel.transaction.TransactionViewModelFactory
 
 class HubActivity : AppCompatActivity() {
-    private val randomReceiver = RandomBroadcastReceiver(supportFragmentManager)
-
     lateinit var binding: ActivityHubBinding
     lateinit var transactionViewModel: TransactionViewModel
     lateinit var locationViewModel: LocationViewModel
@@ -60,16 +59,6 @@ class HubActivity : AppCompatActivity() {
         } else {
             binding.navViewLandscape.visibility = View.GONE
             binding.navView.visibility = View.VISIBLE
-        }
-
-
-        // Setup broadcast receiver
-        val filter = IntentFilter(BondomanApp.ACTION_RANDOM_TRANSACTION)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(randomReceiver, filter, RECEIVER_EXPORTED)
-        } else {
-            registerReceiver(randomReceiver, filter)
         }
     }
 
