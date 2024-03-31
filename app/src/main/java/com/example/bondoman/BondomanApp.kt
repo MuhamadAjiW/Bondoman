@@ -13,5 +13,6 @@ class BondomanApp : Application() {
     // Global statics should be here
     companion object{
         const val ACTION_RANDOM_TRANSACTION = "com.example.bondoman.ACTION_RANDOM_TRANSACTION"
+        const val LOCATION_MARK: Double = 200.0
     }
 }

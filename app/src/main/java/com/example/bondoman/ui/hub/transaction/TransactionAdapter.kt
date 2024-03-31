@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.bondoman.BondomanApp
 import com.example.bondoman.R
 import com.example.bondoman.database.entity.TransactionEntity
 import com.example.bondoman.databinding.ItemTransactionBinding
@@ -98,7 +99,8 @@ class TransactionAdapter(
                 bundle.putString(AddTransactionFragment.KEY_TITLE, tsList[position].title)
                 bundle.putInt(AddTransactionFragment.KEY_AMOUNT, tsList[position].amount)
                 bundle.putInt(AddTransactionFragment.KEY_CATEGORY, context.resources.getStringArray(R.array.category_choices).indexOf(tsList[position].category))
-                bundle.putString(AddTransactionFragment.KEY_LOCATION, location)
+                bundle.putDouble(AddTransactionFragment.KEY_LATITUDE, tsList[position].latitude ?: BondomanApp.LOCATION_MARK)
+                bundle.putDouble(AddTransactionFragment.KEY_LONGITUDE, tsList[position].longitude ?: BondomanApp.LOCATION_MARK)
                 bundle.putString(AddTransactionFragment.KEY_TIMESTAMP, tsList[position].timestamp)
 
                 val transaction = fragmentManager.beginTransaction()
