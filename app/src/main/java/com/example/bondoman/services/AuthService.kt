@@ -8,7 +8,7 @@ import android.os.IBinder
 import android.os.Looper
 import android.os.Message
 import android.os.Process
-import android.util.Log
+//import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.bondoman.BondomanApp
 import com.example.bondoman.api.RetrofitClient
@@ -27,10 +27,6 @@ class AuthService : Service() {
 
     private inner class ServiceHandler(looper: Looper) : Handler(looper) {
         override fun handleMessage(msg: Message) {
-            validate()
-        }
-
-        private fun validate() {
             coroutineScope.launch {
                 while(true) {
                     task()
@@ -40,7 +36,7 @@ class AuthService : Service() {
         }
 
         private suspend fun task() {
-            Log.d("service token", sessionManager.getToken().toString())
+//            Log.d("service token", sessionManager.getToken().toString())
             val token = sessionManager.getToken() ?: return
 
             try {
@@ -85,5 +81,10 @@ class AuthService : Service() {
     override fun onDestroy() {
         coroutineScope.cancel()
         super.onDestroy()
+    }
+
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        coroutineScope.cancel()
+        super.onTaskRemoved(rootIntent)
     }
 }

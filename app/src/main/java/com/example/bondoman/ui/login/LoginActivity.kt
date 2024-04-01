@@ -14,7 +14,6 @@ import com.example.bondoman.BondomanApp
 import com.example.bondoman.ui.hub.HubActivity
 import com.example.bondoman.databinding.ActivityLoginBinding
 import com.example.bondoman.models.Credential
-import com.example.bondoman.services.AuthService
 import com.example.bondoman.services.SessionManager
 import com.example.bondoman.viewmodel.auth.LoginViewModel
 import com.example.bondoman.viewmodel.auth.LoginViewModelFactory
@@ -32,8 +31,6 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
-
-        startService(Intent(this, AuthService::class.java))
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)

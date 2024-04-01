@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.bondoman.services.AuthService
 import com.example.bondoman.services.SessionManager
 import com.example.bondoman.ui.hub.HubActivity
 import com.example.bondoman.ui.login.LoginActivity
@@ -20,6 +21,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        startService(Intent(this, AuthService::class.java))
 
         sessionManager = SessionManager(this)
 

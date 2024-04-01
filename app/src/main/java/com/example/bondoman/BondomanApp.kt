@@ -2,6 +2,7 @@ package com.example.bondoman
 
 import android.app.Application
 import android.content.IntentFilter
+import android.os.Build
 import com.example.bondoman.database.AppDatabase
 
 class BondomanApp : Application() {
@@ -13,7 +14,11 @@ class BondomanApp : Application() {
 
         val filter = IntentFilter(ACTION_RANDOM_TRANSACTION)
 
-        registerReceiver(randomReceiver, filter, RECEIVER_NOT_EXPORTED)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(randomReceiver, filter, RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(randomReceiver, filter)
+        }
     }
 
     // Global statics should be here
@@ -22,6 +27,6 @@ class BondomanApp : Application() {
         const val ACTION_AUTHORIZED = "com.example.bondoman.ACTION_AUTHORIZED"
         const val ACTION_UNAUTHORIZED = "com.example.bondoman.ACTION_UNAUTHORIZED"
         const val LOCATION_MARK: Double = 200.0
-        const val JWT_CHECK_INTERVAL: Long = 60000
+        const val JWT_CHECK_INTERVAL: Long = 6000
     }
 }
