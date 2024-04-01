@@ -1,30 +1,41 @@
 package com.example.bondoman.ui.hub
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.bondoman.BondomanApp
 import com.example.bondoman.R
-import com.example.bondoman.RandomBroadcastReceiver
 import com.example.bondoman.database.AppDatabase
 import com.example.bondoman.database.repository.TransactionRepository
 import com.example.bondoman.databinding.ActivityHubBinding
+import com.example.bondoman.ui.login.LoginActivity
 import com.example.bondoman.viewmodel.transaction.LocationViewModel
 import com.example.bondoman.viewmodel.transaction.LocationViewModelFactory
 import com.example.bondoman.viewmodel.transaction.TransactionViewModel
 import com.example.bondoman.viewmodel.transaction.TransactionViewModelFactory
 
 class HubActivity : AppCompatActivity() {
-    lateinit var binding: ActivityHubBinding
+    private lateinit var binding: ActivityHubBinding
     lateinit var transactionViewModel: TransactionViewModel
-    lateinit var locationViewModel: LocationViewModel
-    var configurationLock: Boolean = false
+    private lateinit var locationViewModel: LocationViewModel
+    private var configurationLock: Boolean = false
+
+    private var broadcastReceiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            navigateToLogin()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -60,6 +71,16 @@ class HubActivity : AppCompatActivity() {
             binding.navViewLandscape.visibility = View.GONE
             binding.navView.visibility = View.VISIBLE
         }
+
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(
+                broadcastReceiver,
+                IntentFilter(BondomanApp.ACTION_UNAUTHORIZED))
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -78,5 +99,16 @@ class HubActivity : AppCompatActivity() {
 
     private fun onBackClick(view: View) {
         onBackPressed()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
+    }
+
+    private fun navigateToLogin() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }

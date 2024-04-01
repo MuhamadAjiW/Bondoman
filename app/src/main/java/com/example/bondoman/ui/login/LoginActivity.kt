@@ -1,15 +1,21 @@
 package com.example.bondoman.ui.login
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.bondoman.BondomanApp
 import com.example.bondoman.ui.hub.HubActivity
 import com.example.bondoman.databinding.ActivityLoginBinding
 import com.example.bondoman.models.Credential
+import com.example.bondoman.services.AuthService
 import com.example.bondoman.services.SessionManager
 import com.example.bondoman.viewmodel.login.AuthViewModel
 import com.example.bondoman.viewmodel.login.AuthViewModelFactory
@@ -22,8 +28,16 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var loginViewModel: LoginViewModel
     private lateinit var authViewModel: AuthViewModel
 
+    private var broadcastReceiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            navigateToHub()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
+
+        startService(Intent(this, AuthService::class.java))
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -44,16 +58,12 @@ class LoginActivity : AppCompatActivity() {
         }
 
         authViewModel.removeToken.observe(this) {
-            if (it) {
-                Log.d("bondoman cuy", "removing token")
-                sessionManager.clearToken()
-            }
+            if (it) sessionManager.clearToken()
         }
 
         loginViewModel.loginToken.observe(this) {
             if (it != null) {
                 sessionManager.saveToken(it)
-                Log.d("bondoman cuy", "saving token")
                 navigateToHub()
             }
         }
@@ -67,11 +77,16 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        Log.d("bondoman cuy", "OnResume Called")
         val token = sessionManager.getToken()
         token?.let {
             authViewModel.validate(token)
         }
+
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(
+                broadcastReceiver,
+                IntentFilter(BondomanApp.ACTION_AUTHORIZED)
+            )
     }
 
     private fun onLoginClick(view: View) {
@@ -96,5 +111,10 @@ class LoginActivity : AppCompatActivity() {
         val intent = Intent(this, HubActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
     }
 }
