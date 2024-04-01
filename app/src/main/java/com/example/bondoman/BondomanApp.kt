@@ -27,6 +27,6 @@ class BondomanApp : Application() {
         const val ACTION_AUTHORIZED = "com.example.bondoman.ACTION_AUTHORIZED"
         const val ACTION_UNAUTHORIZED = "com.example.bondoman.ACTION_UNAUTHORIZED"
         const val LOCATION_MARK: Double = 200.0
-        const val JWT_CHECK_INTERVAL: Long = 6000
+        const val JWT_CHECK_INTERVAL: Long = 60000 * 3
     }
 }
