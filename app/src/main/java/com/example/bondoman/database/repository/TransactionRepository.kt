@@ -38,7 +38,7 @@ class TransactionRepository(private val transactionDao: TransactionDao) {
         transactionDao.deleteAll()
     }
 
-    suspend fun postUploadNota(imageReqBody: RequestBody, token: String): Boolean {
+    suspend fun postUploadNota(imageReqBody: RequestBody, token: String): List<TransactionEntity> {
         try {
             val authToken = "Bearer $token"
             val response = RetrofitClient.uploadInstance.uploadImage(
@@ -49,32 +49,26 @@ class TransactionRepository(private val transactionDao: TransactionDao) {
 
             if (!response.isSuccessful) {
                 Log.d(TAG, response.code().toString())
-                return false
+                return emptyList()
             }
 
-            for (item in response.body()!!.items.items) {
-                insert(
-                    TransactionEntity(
-                        id = 0, title = item.name,
-                        // TODO: Category
-                        category = "scanned", amount = item.qty * item.price.toInt(),
-                        // TODO: Location
-                        latitude = null,
-                        longitude = null,
-                        timestamp = SimpleDateFormat(
-                            "yyyy-MM-dd HH:mm:ss", Locale.getDefault()
-                        ).format(
-                            Date()
-                        )
+            return response.body()!!.items.items.map { item ->
+                TransactionEntity(
+                    id = 0, title = item.name,
+                    // TODO: Category
+                    category = "scanned", amount = item.qty * item.price.toInt(),
+                    // TODO: Location
+                    latitude = null, longitude = null, timestamp = SimpleDateFormat(
+                        "yyyy-MM-dd HH:mm:ss", Locale.getDefault()
+                    ).format(
+                        Date()
                     )
                 )
             }
-
-            return true
         } catch (e: Exception) {
             Log.e(TAG, e.toString())
 
-            return false
+            return emptyList()
         }
     }
 }

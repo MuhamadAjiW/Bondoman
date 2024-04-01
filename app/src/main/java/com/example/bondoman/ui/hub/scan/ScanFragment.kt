@@ -47,6 +47,7 @@ class ScanFragment : Fragment() {
     private lateinit var cameraExecutor: ExecutorService
 
     private lateinit var sessionManager: SessionManager
+    private val scanDialog: ScanDialogFragment = ScanDialogFragment()
 
     private val activityResultLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -93,12 +94,8 @@ class ScanFragment : Fragment() {
             viewLifecycleOwner, cameraPermissionObserver
         )
 
-        binding.imageCaptureButton.setOnClickListener {
-            takePhoto()
-        }
-        binding.selectPhotoButton.setOnClickListener {
-            selectPhoto()
-        }
+        binding.imageCaptureButton.setOnClickListener(::onImageCaptureClick)
+        binding.selectPhotoButton.setOnClickListener(::onSelectPhotoClick)
 
         cameraExecutor = Executors.newSingleThreadExecutor()
         sessionManager = SessionManager(requireActivity())
@@ -172,7 +169,7 @@ class ScanFragment : Fragment() {
         }, ContextCompat.getMainExecutor(requireActivity()))
     }
 
-    private fun takePhoto() {
+    private fun onImageCaptureClick(view: View) {
         val imageCapture = imageCapture ?: return
 
         imageCapture.takePicture(ContextCompat.getMainExecutor(requireActivity()),
@@ -197,14 +194,11 @@ class ScanFragment : Fragment() {
 
         token?.let{
             viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-                val success = scanViewModel.uploadNota(imageReqBody, token)
+                val scannedTransactions = scanViewModel.uploadNota(imageReqBody, token)
 
-                if (success) {
-                    Toast.makeText(
-                        requireActivity(),
-                        getString(R.string.scan_add_toast_success),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                if (scannedTransactions.isNotEmpty()) {
+                    scanDialog.scannedTransactions.value = scannedTransactions
+                    scanDialog.show(parentFragmentManager, "scan")
                 } else {
                     Toast.makeText(
                         requireActivity(), getString(R.string.scan_add_toast_failed), Toast.LENGTH_SHORT
@@ -213,10 +207,10 @@ class ScanFragment : Fragment() {
             }
         }
 
-        // TODO: if token null
+        // TODO: if token null?
     }
 
-    private fun selectPhoto() {
+    private fun onSelectPhotoClick(view: View) {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "image/*"
         startActivityForResult(intent, 1)
