@@ -12,6 +12,7 @@ class BondomanApp : Application() {
         AppDatabase.getInstance(this)
 
         val filter = IntentFilter(ACTION_RANDOM_TRANSACTION)
+
         registerReceiver(randomReceiver, filter, RECEIVER_NOT_EXPORTED)
     }
 
@@ -21,5 +22,6 @@ class BondomanApp : Application() {
         const val ACTION_AUTHORIZED = "com.example.bondoman.ACTION_AUTHORIZED"
         const val ACTION_UNAUTHORIZED = "com.example.bondoman.ACTION_UNAUTHORIZED"
         const val LOCATION_MARK: Double = 200.0
+        const val JWT_CHECK_INTERVAL: Long = 60000
     }
 }

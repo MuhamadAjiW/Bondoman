@@ -38,11 +38,9 @@ class TransactionRepository(private val transactionDao: TransactionDao) {
         transactionDao.deleteAll()
     }
 
-    suspend fun postUploadNota(imageReqBody: RequestBody): Boolean {
+    suspend fun postUploadNota(imageReqBody: RequestBody, token: String): Boolean {
         try {
-            // TODO: Get stored auth token
-            val authToken =
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaW0iOiIxMzUyMTE0OSIsImlhdCI6MTcxMTgxNTE1OCwiZXhwIjoxNzExODE1NDU4fQ.mASnON98EJmGWmVMdjWB47ef3pwYIVJelaYMpMjy_BY"
+            val authToken = "Bearer $token"
             val response = RetrofitClient.uploadInstance.uploadImage(
                 MultipartBody.Part.createFormData(
                     "file", "test", imageReqBody

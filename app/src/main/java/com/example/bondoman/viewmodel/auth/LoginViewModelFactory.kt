@@ -1,4 +1,4 @@
-package com.example.bondoman.viewmodel.login
+package com.example.bondoman.viewmodel.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

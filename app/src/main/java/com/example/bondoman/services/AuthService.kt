@@ -9,7 +9,6 @@ import android.os.Looper
 import android.os.Message
 import android.os.Process
 import android.util.Log
-import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.bondoman.BondomanApp
 import com.example.bondoman.api.RetrofitClient
@@ -18,7 +17,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class AuthService : Service() {
 
@@ -26,10 +24,6 @@ class AuthService : Service() {
     private var serviceHandler: ServiceHandler? = null
     private lateinit var sessionManager: SessionManager
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-
-    companion object {
-        const val INTERVAL: Long = 60000
-    }
 
     private inner class ServiceHandler(looper: Looper) : Handler(looper) {
         override fun handleMessage(msg: Message) {
@@ -40,13 +34,13 @@ class AuthService : Service() {
             coroutineScope.launch {
                 while(true) {
                     task()
-                    delay(INTERVAL)
+                    delay(BondomanApp.JWT_CHECK_INTERVAL)
                 }
             }
         }
 
         private suspend fun task() {
-            Log.d("bg task", Thread.currentThread().toString())
+            Log.d("service token", sessionManager.getToken().toString())
             val token = sessionManager.getToken() ?: return
 
             try {
@@ -66,7 +60,6 @@ class AuthService : Service() {
 
 
     override fun onCreate() {
-        Toast.makeText(this, "service created", Toast.LENGTH_SHORT).show()
         sessionManager = SessionManager(applicationContext)
 
         HandlerThread("ServiceStartArguments", Process.THREAD_PRIORITY_BACKGROUND).apply {

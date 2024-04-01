@@ -8,7 +8,7 @@ import okhttp3.RequestBody
 class ScanViewModel(private val repository: TransactionRepository) : ViewModel() {
     val isCameraPermissionGranted = MutableLiveData(false)
 
-    suspend fun uploadNota(imageReqBody: RequestBody): Boolean {
-        return repository.postUploadNota(imageReqBody)
+    suspend fun uploadNota(imageReqBody: RequestBody, token: String): Boolean {
+        return repository.postUploadNota(imageReqBody, token)
     }
 }
