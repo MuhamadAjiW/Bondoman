@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.hub.scan.ScanFragment"
-    android:background="?attr/background">
+    android:background="?attr/background"
+    tools:context=".ui.hub.scan.ScanFragment">
 
     <androidx.camera.view.PreviewView
         android:id="@+id/viewFinder"

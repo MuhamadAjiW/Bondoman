@@ -38,11 +38,11 @@ class TransactionRepository(private val transactionDao: TransactionDao) {
         transactionDao.deleteAll()
     }
 
-    suspend fun postUploadNota(imageReqBody: RequestBody): Boolean {
+    suspend fun postUploadNota(imageReqBody: RequestBody): List<TransactionEntity> {
         try {
             // TODO: Get stored auth token
             val authToken =
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaW0iOiIxMzUyMTE0OSIsImlhdCI6MTcxMTgxNTE1OCwiZXhwIjoxNzExODE1NDU4fQ.mASnON98EJmGWmVMdjWB47ef3pwYIVJelaYMpMjy_BY"
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaW0iOiIxMzUyMTE0OSIsImlhdCI6MTcxMTkxOTI3NCwiZXhwIjoxNzExOTE5NTc0fQ.eek7Uf1vXidl8J7ns04K3lBRGlqCjtIxwZvhPVzT6cE"
             val response = RetrofitClient.uploadInstance.uploadImage(
                 MultipartBody.Part.createFormData(
                     "file", "test", imageReqBody
@@ -51,32 +51,26 @@ class TransactionRepository(private val transactionDao: TransactionDao) {
 
             if (!response.isSuccessful) {
                 Log.d(TAG, response.code().toString())
-                return false
+                return emptyList()
             }
 
-            for (item in response.body()!!.items.items) {
-                insert(
-                    TransactionEntity(
-                        id = 0, title = item.name,
-                        // TODO: Category
-                        category = "scanned", amount = item.qty * item.price.toInt(),
-                        // TODO: Location
-                        latitude = null,
-                        longitude = null,
-                        timestamp = SimpleDateFormat(
-                            "yyyy-MM-dd HH:mm:ss", Locale.getDefault()
-                        ).format(
-                            Date()
-                        )
+            return response.body()!!.items.items.map { item ->
+                TransactionEntity(
+                    id = 0, title = item.name,
+                    // TODO: Category
+                    category = "scanned", amount = item.qty * item.price.toInt(),
+                    // TODO: Location
+                    latitude = null, longitude = null, timestamp = SimpleDateFormat(
+                        "yyyy-MM-dd HH:mm:ss", Locale.getDefault()
+                    ).format(
+                        Date()
                     )
                 )
             }
-
-            return true
         } catch (e: Exception) {
             Log.e(TAG, e.toString())
 
-            return false
+            return emptyList()
         }
     }
 }

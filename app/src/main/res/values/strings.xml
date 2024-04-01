@@ -55,8 +55,10 @@
     <string name="select_photo">Select Photo</string>
 
     <string name="scan_add_toast_success">Successfully added new transactions</string>
-    <string name="scan_add_toast_failed">Failed to add new transactions</string>
+    <string name="scan_add_toast_failed">Failed to get response from server</string>
     <string name="scan_enable_camera">Please allow camera permission to access this feature</string>
+    <string name="scan_rescan">Rescan</string>
+    <string name="scan_save">Save</string>
 
     <string name="twibbon_add_toast_success">Successfully saved twibbon</string>
     <string name="twibbon_add_toast_failed">Failed to save twibbon</string>
