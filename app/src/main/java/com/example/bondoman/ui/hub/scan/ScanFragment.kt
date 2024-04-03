@@ -31,6 +31,7 @@ import com.example.bondoman.database.repository.TransactionRepository
 import com.example.bondoman.databinding.FragmentScanBinding
 import com.example.bondoman.viewmodel.scan.ScanViewModel
 import com.example.bondoman.viewmodel.scan.ScanViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import java.io.ByteArrayOutputStream
@@ -46,6 +47,9 @@ class ScanFragment : Fragment() {
     private lateinit var cameraExecutor: ExecutorService
 
     private val scanDialog: ScanDialogFragment = ScanDialogFragment()
+    private lateinit var networkManager: NetworkManager
+
+    private lateinit var snackbar: Snackbar
 
     private val activityResultLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
@@ -73,6 +77,22 @@ class ScanFragment : Fragment() {
         }
     }
 
+    private val cameraBtnObserver = Observer<Boolean> {
+        binding.imageCaptureButton.isEnabled = it
+    }
+
+    private val selectBtnObserver = Observer<Boolean> {
+        binding.selectPhotoButton.isEnabled = it
+    }
+
+    private val snackbarObserver = Observer<Boolean> {
+        if (it && this::snackbar.isInitialized) {
+            snackbar.show()
+        } else if (!it && this::snackbar.isInitialized) {
+            snackbar.dismiss()
+        }
+    }
+
     companion object {
         private const val TAG = "ScanFragment"
         private const val CAMERA_PERMISSION = Manifest.permission.CAMERA
@@ -91,9 +111,27 @@ class ScanFragment : Fragment() {
         scanViewModel.isCameraPermissionGranted.observe(
             viewLifecycleOwner, cameraPermissionObserver
         )
+        scanViewModel.isSelectBtnEnabled.observe(
+            viewLifecycleOwner, cameraBtnObserver
+        )
+        scanViewModel.isSelectBtnEnabled.observe(
+            viewLifecycleOwner, selectBtnObserver
+        )
+        scanViewModel.showSnackbar.observe(
+            viewLifecycleOwner, snackbarObserver
+        )
 
         binding.imageCaptureButton.setOnClickListener(::onImageCaptureClick)
         binding.selectPhotoButton.setOnClickListener(::onSelectPhotoClick)
+
+        snackbar = Snackbar.make(
+            requireActivity().findViewById(android.R.id.content),
+            getString(R.string.connection_lost),
+            Snackbar.LENGTH_INDEFINITE
+        )
+
+        networkManager = NetworkManager(requireContext(), scanViewModel)
+        networkManager.activate()
 
         cameraExecutor = Executors.newSingleThreadExecutor()
 
@@ -118,10 +156,12 @@ class ScanFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        networkManager.deactivate()
         cameraExecutor.shutdown()
     }
 
 
+    @Deprecated("")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 1) {
             val image = data?.data
