@@ -144,7 +144,7 @@ class TransactionActivity : AppCompatActivity() {
             // observer to "redirect" user
             it?.let{
                 if (!it) {
-                    Logger.log("HUB ACTIVITY: AUTH", "View model unauthorized")
+                    Logger.log("TRANSACTION ACTIVITY: AUTH", "View model unauthorized")
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
                     finish()
@@ -156,7 +156,7 @@ class TransactionActivity : AppCompatActivity() {
             // observer for removing token
             if (it) {
                 sessionManager.clearToken()
-                Logger.log("HUB ACTIVITY: AUTH", "View model removing token")
+                Logger.log("TRANSACTION ACTIVITY: AUTH", "View model removing token")
             }
         }
     }
@@ -295,7 +295,7 @@ class TransactionActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         val token = sessionManager.getToken()
-        Logger.log("HUB ACTIVITY: AUTH", "View model validate token")
+        Logger.log("TRANSACTION ACTIVITY: AUTH", "View model validate token")
         authViewModel.validate(token, true)
 
         LocalBroadcastManager.getInstance(this)
