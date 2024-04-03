@@ -1,14 +1,13 @@
 package com.example.bondoman
 
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
-import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.bondoman.services.AuthService
 import com.example.bondoman.services.SessionManager
+import com.example.bondoman.types.util.Logger
 import com.example.bondoman.ui.hub.HubActivity
 import com.example.bondoman.ui.login.LoginActivity
 import com.example.bondoman.viewmodel.auth.AuthViewModel
@@ -22,34 +21,67 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        startService(Intent(this, AuthService::class.java))
-
         sessionManager = SessionManager(this)
 
         val authViewModelFactory = AuthViewModelFactory()
         authViewModel = ViewModelProvider(this, authViewModelFactory)[AuthViewModel::class.java]
 
         authViewModel.isAuthorized.observe(this) {
+            // observer to "redirect" user
             it?.let{
-                val intent = if (it) {
-                    Intent(this, HubActivity::class.java)
-                } else {
-                    Intent(this, LoginActivity::class.java)
-                }
+                if (it) {
+                    Logger.log("MAIN ACTIVITY: AUTH", "View model authorized")
+                    // start service
+                    startService(Intent(this, AuthService::class.java))
 
+                    val intent = Intent(this, HubActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    Logger.log("MAIN ACTIVITY: AUTH", "View model unauthorized")
+                    val intent = Intent(this, LoginActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+            }
+        }
+
+        authViewModel.isConnectionTimeout.observe(this) {
+            if (it) {
+                Logger.log("MAIN ACTIVITY: AUTH", "View model connection timeout")
+                // start service
+                startService(Intent(this, AuthService::class.java))
+
+                val intent = Intent(this, HubActivity::class.java)
                 startActivity(intent)
                 finish()
             }
         }
 
+        authViewModel.errMessage.observe(this) {
+            // observer for error message
+            if (it.isNotEmpty()) {
+                Logger.log("MAIN ACTIVITY: AUTH", "View model error")
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            } else {
+                // an error occurred
+
+            }
+        }
+
         authViewModel.removeToken.observe(this) {
-            if (it) sessionManager.clearToken()
+            // observer for removing token
+            if (it){
+                sessionManager.clearToken()
+                Logger.log("MAIN ACTIVITY: AUTH", "View model clear token")
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
         val token = sessionManager.getToken()
-        authViewModel.validate(token)
+        Logger.log("MAIN ACTIVITY: AUTH", "View model validating token")
+        authViewModel.validate(token, true)
     }
 }

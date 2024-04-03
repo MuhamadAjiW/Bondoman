@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.bondoman.api.RetrofitClient
 import com.example.bondoman.models.Credential
 import kotlinx.coroutines.launch
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 class LoginViewModel: ViewModel() {
     val loginMessage = MutableLiveData("")
@@ -19,13 +21,16 @@ class LoginViewModel: ViewModel() {
                 if (response.code() == 200) {
                     loginMessage.value = "Login success"
                     loginToken.value = response.body()?.token
-                } else if (response.code() / 100 == 4){
+                } else if (response.code() / 100 == 4) {
                     loginMessage.value = "Invalid email or password"
                     loginToken.value = null
                 } else {
                     loginMessage.value = "Internal server error"
                     loginToken.value = null
                 }
+            } catch (_: UnknownHostException) {
+                loginMessage.value = "Connection timeout"
+                loginToken.value = null
             } catch (ex: Exception) {
                 loginMessage.value = "An error occurred"
                 loginToken.value = null

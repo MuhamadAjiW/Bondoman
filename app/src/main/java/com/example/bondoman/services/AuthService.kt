@@ -8,14 +8,18 @@ import android.os.IBinder
 import android.os.Looper
 import android.os.Message
 import android.os.Process
+import android.util.Log
+import android.widget.Toast
 //import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.bondoman.BondomanApp
 import com.example.bondoman.api.RetrofitClient
+import com.example.bondoman.types.util.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class AuthService : Service() {
@@ -28,34 +32,44 @@ class AuthService : Service() {
     private inner class ServiceHandler(looper: Looper) : Handler(looper) {
         override fun handleMessage(msg: Message) {
             coroutineScope.launch {
-                while(true) {
-                    task()
+                while (true) {
+                    val token = sessionManager.getToken()
+
+                    if (token == null) {
+                        Logger.log("AUTH SERVICE", "From service ${msg.arg1} thread ${Thread.currentThread()}: No token found")
+                        Logger.log("AUTH SERVICE", "Stopping service !!!")
+                        stopSelf()
+                    }
+
+                    try {
+                        val response = RetrofitClient.authInstance.authToken("Bearer $token")
+
+                        if (response.code() == 200) {
+                            Logger.log("AUTH SERVICE", "From service ${msg.arg1} thread ${Thread.currentThread()}: Token authorized")
+                        } else if (response.code() == 401) {
+                            sessionManager.clearToken()
+
+                            val intent = Intent(BondomanApp.ACTION_UNAUTHORIZED)
+                            LocalBroadcastManager.getInstance(applicationContext)
+                                .sendBroadcast(intent)
+
+                            Logger.log("AUTH SERVICE", "From service ${msg.arg1} thread ${Thread.currentThread()}: Token unauthorized. Removed from session.")
+                            Logger.log("AUTH SERVICE", "Stopping service !!!")
+                            stopSelf()
+                        } // ELSE: internal server error
+                    } catch (_: Exception) {
+                        // server error
+                    }
+
                     delay(BondomanApp.JWT_CHECK_INTERVAL)
                 }
             }
-        }
-
-        private suspend fun task() {
-//            Log.d("service token", sessionManager.getToken().toString())
-            val token = sessionManager.getToken() ?: return
-
-            try {
-                val response = RetrofitClient.authInstance.authToken("Bearer $token")
-
-                if (response.code() == 200) {
-                    val intent = Intent(BondomanApp.ACTION_AUTHORIZED)
-                    LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
-                } else if (response.code() == 401) {
-                    sessionManager.clearToken()
-                    val intent = Intent(BondomanApp.ACTION_UNAUTHORIZED)
-                    LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
-                }
-            } catch (_: Exception) { }
         }
     }
 
 
     override fun onCreate() {
+        Logger.log("AUTH SERVICE", "Service started")
         sessionManager = SessionManager(applicationContext)
 
         HandlerThread("ServiceStartArguments", Process.THREAD_PRIORITY_BACKGROUND).apply {
@@ -71,20 +85,22 @@ class AuthService : Service() {
             serviceHandler?.sendMessage(msg)
         }
 
-        return START_NOT_STICKY
+        return START_REDELIVER_INTENT
     }
 
     override fun onBind(intent: Intent): IBinder? {
         return null
     }
 
-    override fun onDestroy() {
-        coroutineScope.cancel()
-        super.onDestroy()
+    override fun onTaskRemoved(rootIntent: Intent?) {
+        super.onTaskRemoved(rootIntent)
+        Logger.log("AUTH SERVICE", "onTaskRemoved")
+        stopSelf()
     }
 
-    override fun onTaskRemoved(rootIntent: Intent?) {
+    override fun onDestroy() {
+        Logger.log("AUTH SERVICE", "Service destroyed")
         coroutineScope.cancel()
-        super.onTaskRemoved(rootIntent)
+        super.onDestroy()
     }
 }

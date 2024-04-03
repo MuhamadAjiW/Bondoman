@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import com.example.bondoman.api.RetrofitClient
 import com.example.bondoman.database.dao.TransactionDao
 import com.example.bondoman.database.entity.TransactionEntity
+import com.example.bondoman.types.util.Logger
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.text.SimpleDateFormat
@@ -48,7 +49,7 @@ class TransactionRepository(private val transactionDao: TransactionDao) {
             )
 
             if (!response.isSuccessful) {
-                Log.d(TAG, response.code().toString())
+                Logger.log(TAG, response.code().toString())
                 return emptyList()
             }
 

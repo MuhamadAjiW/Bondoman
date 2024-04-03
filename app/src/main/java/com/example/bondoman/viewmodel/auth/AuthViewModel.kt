@@ -4,17 +4,22 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.bondoman.api.RetrofitClient
+import com.example.bondoman.types.util.Logger
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 class AuthViewModel: ViewModel() {
     val isAuthorized = MutableLiveData<Boolean?>(null)
+    val errMessage = MutableLiveData("")
+    val isConnectionTimeout = MutableLiveData<Boolean>(false)
     val removeToken = MutableLiveData(false)
 
-    fun validate(token: String?) {
+    fun validate(token: String?, isDelay: Boolean) {
         viewModelScope.launch {
             if (token == null) {
-                delay(1000)
+                if (isDelay) delay(1000)
                 isAuthorized.value = false
             } else {
                 try {
@@ -25,8 +30,14 @@ class AuthViewModel: ViewModel() {
                     } else if (response.code() == 401) {
                         isAuthorized.value = false
                         removeToken.value = true
+                    } else {
+                        errMessage.value = "Auth server error"
                     }
-                } catch (_: Exception) {
+                } catch (_: UnknownHostException) {
+                    errMessage.value = "Connection timeout"
+                    isConnectionTimeout.value = true
+                } catch (e: Exception) {
+                    errMessage.value = "An error occurred"
                 }
             }
         }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +15,9 @@ import com.example.bondoman.BondomanApp
 import com.example.bondoman.ui.hub.HubActivity
 import com.example.bondoman.databinding.ActivityLoginBinding
 import com.example.bondoman.models.Credential
+import com.example.bondoman.services.AuthService
 import com.example.bondoman.services.SessionManager
+import com.example.bondoman.types.util.Logger
 import com.example.bondoman.viewmodel.auth.LoginViewModel
 import com.example.bondoman.viewmodel.auth.LoginViewModelFactory
 
@@ -85,6 +88,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun navigateToHub() {
+        Logger.log("LOGIN ACTIVITY: AUTH", "View model authorized")
+        // start service
+        startService(Intent(this, AuthService::class.java))
+
         val intent = Intent(this, HubActivity::class.java)
         startActivity(intent)
         finish()
