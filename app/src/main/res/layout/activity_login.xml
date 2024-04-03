@@ -34,16 +34,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/login_label_email"
-            android:textSize="10pt"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dp"
             android:textColor="?android:textColorPrimary"/>
 
         <EditText
             android:paddingHorizontal="10sp"
             android:id="@+id/email_label"
+            android:autofillHints="emailAddress"
             android:layout_width="match_parent"
-            android:layout_height="16pt"
+            android:layout_height="wrap_content"
+            android:maxHeight="48dp"
+            android:minHeight="48dp"
+            android:scrollHorizontally="true"
             android:ems="10"
-            android:inputType="text"
+            android:inputType="textEmailAddress"
+            android:hint="@string/type_your_email"
             android:background="@color/gray"
             android:textColor="@color/black"/>
 
@@ -53,7 +59,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/login_label_password"
-            android:textSize="10pt"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dp"
             android:textColor="?android:textColorPrimary"
             android:layout_marginTop="5pt"/>
 
@@ -61,10 +68,12 @@
             android:paddingHorizontal="10sp"
             android:id="@+id/password_input"
             android:layout_width="match_parent"
-            android:layout_height="16pt"
+            android:layout_height="48dp"
             android:ems="10"
             android:inputType="textPassword"
+            android:autofillHints="password"
             android:background="@color/gray"
+            android:hint="@string/type_your_password"
             android:textColor="@color/black"/>
 
         <Button

@@ -76,4 +76,23 @@
     <string name="get_latest_location">Get latest location</string>
     <string name="delete_location">Delete location</string>
     <string name="no_location_data">No location data</string>
+    <string name="type_your_email">Type your email...</string>
+    <string name="type_your_password">Type your password...</string>
+    <string name="type_transaction_title">Type transaction title...</string>
+    <string name="type_transaction_amount">Type transaction amount...</string>
+    <string name="guy_logo">GUY Logo</string>
+    <string name="location_icon">location icon</string>
+    <string name="view_location">View Location</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="amount">Amount</string>
+    <string name="location">Location</string>
+    <string name="title">Title</string>
+    <string name="date">Date</string>
+    <string name="category">Category</string>
+    <string name="back_button">Back button</string>
+    <string name="go_back">Go back</string>
+    <string name="header">Header</string>
+    <string name="menu">Menu</string>
+    <string name="add_new_transaction">Add new transaction</string>
 </resources>
