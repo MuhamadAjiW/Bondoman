@@ -56,9 +56,9 @@ class AuthService : Service() {
                             Logger.log("AUTH SERVICE", "From service ${msg.arg1} thread ${Thread.currentThread()}: Token unauthorized. Removed from session.")
                             Logger.log("AUTH SERVICE", "Stopping service !!!")
                             stopSelf()
-                        } // ELSE: internal server error
+                        } // ELSE: internal server error, retry later
                     } catch (_: Exception) {
-                        // server error
+                        // retry later
                     }
 
                     delay(BondomanApp.JWT_CHECK_INTERVAL)
@@ -85,7 +85,7 @@ class AuthService : Service() {
             serviceHandler?.sendMessage(msg)
         }
 
-        return START_REDELIVER_INTENT
+        return START_STICKY
     }
 
     override fun onBind(intent: Intent): IBinder? {
