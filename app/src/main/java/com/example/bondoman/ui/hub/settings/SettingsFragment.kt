@@ -101,10 +101,10 @@ class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
                 Toast.makeText(requireContext(),  getString(R.string.save_toast_success) + "$file", Toast.LENGTH_SHORT).show()
 
                 // Open file immediately
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.setDataAndType(FileProvider.getUriForFile(requireContext(), requireContext().packageName + ".provider", file), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
+//                val intent = Intent(Intent.ACTION_VIEW)
+//                intent.setDataAndType(FileProvider.getUriForFile(requireContext(), requireContext().packageName + ".provider", file), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+//                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK)
+//                startActivity(intent)
             }
             catch (e: Error){
                 Toast.makeText(requireContext(), e.message, Toast.LENGTH_SHORT).show()
@@ -153,9 +153,9 @@ class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
             ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
         }
 
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            return
-        }
+//        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+//            return
+//        }
 
         buttonCode = ButtonCode.SAVE_BUTTON
         excelDialog.show(parentFragmentManager, "excel")
