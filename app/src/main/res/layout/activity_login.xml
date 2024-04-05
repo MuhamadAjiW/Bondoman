@@ -21,13 +21,14 @@
 
     <LinearLayout
         android:id="@+id/login_cluster"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:paddingHorizontal="50dp" >
 
         <TextView
             android:id="@+id/email_title"
@@ -67,12 +68,15 @@
         <EditText
             android:paddingHorizontal="10sp"
             android:id="@+id/password_input"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
             android:ems="10"
             android:inputType="textPassword"
             android:autofillHints="password"
             android:background="@color/gray"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxHeight="48dp"
+            android:minHeight="48dp"
+            android:scrollHorizontally="true"
             android:hint="@string/type_your_password"
             android:textColor="@color/black"/>
 

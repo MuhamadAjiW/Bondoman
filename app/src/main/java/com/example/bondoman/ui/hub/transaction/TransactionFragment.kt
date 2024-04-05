@@ -38,6 +38,7 @@ class TransactionFragment : Fragment(){
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             val header = (requireActivity() as HubActivity).findViewById<TextView>(R.id.nav_title)
             header.text = getString(R.string.hub_nav_transaction)
+            header.contentDescription = "Transaction header"
         }
 
         tsViewModel.list.observe(viewLifecycleOwner) { tsList ->

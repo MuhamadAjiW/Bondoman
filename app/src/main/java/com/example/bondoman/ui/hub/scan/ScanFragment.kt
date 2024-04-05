@@ -109,6 +109,7 @@ class ScanFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             val header = requireActivity().findViewById<TextView>(R.id.nav_title)
             header.text = getString(R.string.hub_nav_scan)
+            header.contentDescription = "Scan header"
 
             // Check camera permission
             if (!checkCameraPermission()) {

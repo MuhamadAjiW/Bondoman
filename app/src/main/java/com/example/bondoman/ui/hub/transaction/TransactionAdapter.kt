@@ -49,6 +49,15 @@ class TransactionAdapter(
             tvCategory.text = tsList[position].category
             tvTitle.text = tsList[position].title
 
+            val editString = "EDIT item id = ${tsList[position].id}"
+            btnEdit.contentDescription = editString
+
+            val deleteString = "DELETE item id = ${tsList[position].id}"
+            btnDelete.contentDescription = deleteString
+
+            val viewLocString = "VIEW LOCATION item id = ${tsList[position].id}"
+            btnLocation.contentDescription = viewLocString
+
             val formatter: NumberFormat = NumberFormat.getNumberInstance(locale)
             val amount = "Rp${formatter.format(tsList[position].amount)}"
             tvAmount.text = amount

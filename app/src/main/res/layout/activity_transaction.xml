@@ -35,10 +35,13 @@
 
             <EditText
                 android:id="@+id/title_input"
-                android:layout_width="match_parent"
                 android:hint="@string/type_transaction_title"
-                android:layout_height="48dp"
                 android:background="@color/gray"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="48dp"
+                android:minHeight="48dp"
+                android:scrollHorizontally="true"
                 android:ems="10"
                 android:inputType="text"
                 android:paddingHorizontal="10sp"
@@ -58,7 +61,10 @@
             <EditText
                 android:id="@+id/amount_input"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
+                android:maxHeight="48dp"
+                android:minHeight="48dp"
+                android:scrollHorizontally="true"
                 android:background="@color/gray"
                 android:ems="10"
                 android:importantForAutofill="no"
@@ -80,7 +86,10 @@
             <Spinner
                 android:id="@+id/category_input"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
+                android:maxHeight="48dp"
+                android:minHeight="48dp"
+                android:scrollHorizontally="true"
                 android:background="@color/gray"
                 android:entries="@array/category_choices" />
 

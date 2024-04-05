@@ -41,6 +41,7 @@ class StatsFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             val header = requireActivity().findViewById<TextView>(R.id.nav_title)
             header.text = getString(R.string.hub_nav_stats)
+            header.contentDescription = "Stats header"
         }
 
         tsViewModel = (requireActivity() as HubActivity).transactionViewModel
