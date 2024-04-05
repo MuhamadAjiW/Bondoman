@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/hub_nav_transaction">
+
+    <fragment
+        android:id="@+id/hub_nav_transaction"
+        android:name="com.example.bondoman.ui.hub.transaction.TransactionFragment"
+        android:label="@string/hub_nav_transaction"
+        tools:layout="@layout/fragment_transaction" />
+
+    <fragment
+        android:id="@+id/hub_nav_scan"
+        android:name="com.example.bondoman.ui.hub.scan.ScanFragment"
+        android:label="@string/hub_nav_scan"
+        tools:layout="@layout/fragment_scan" />
+
+    <fragment
+        android:id="@+id/hub_nav_twibbon"
+        android:name="com.example.bondoman.ui.hub.twibbon.TwibbonFragment"
+        android:label="@string/hub_nav_twibbon"
+        tools:layout="@layout/fragment_twibbon" />
+
+    <fragment
+        android:id="@+id/hub_nav_stats"
+        android:name="com.example.bondoman.ui.hub.stats.StatsFragment"
+        android:label="@string/hub_nav_stats"
+        tools:layout="@layout/fragment_stats" />
+
+    <fragment
+        android:id="@+id/hub_nav_settings"
+        android:name="com.example.bondoman.ui.hub.settings.SettingsFragment"
+        android:label="@string/hub_nav_settings"
+        tools:layout="@layout/fragment_settings" />
+
+</navigation>

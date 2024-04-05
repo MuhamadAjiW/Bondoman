@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/header_layout" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintTop_toBottomOf="@+id/header"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:id="@+id/login_cluster"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/transaction_label_title"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="20sp"
+                android:layout_marginBottom="10dp" />
+
+            <EditText
+                android:id="@+id/title_input"
+                android:hint="@string/type_transaction_title"
+                android:background="@color/gray"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="48dp"
+                android:minHeight="48dp"
+                android:scrollHorizontally="true"
+                android:ems="10"
+                android:inputType="text"
+                android:paddingHorizontal="10sp"
+                android:textColor="@color/black"
+                android:importantForAutofill="no" />
+
+            <TextView
+                android:id="@+id/amount_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5pt"
+                android:text="@string/transaction_label_amount"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="20sp"
+                android:layout_marginBottom="10dp" />
+
+            <EditText
+                android:id="@+id/amount_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="48dp"
+                android:minHeight="48dp"
+                android:scrollHorizontally="true"
+                android:background="@color/gray"
+                android:ems="10"
+                android:importantForAutofill="no"
+                android:hint="@string/type_transaction_amount"
+                android:inputType="numberDecimal"
+                android:paddingHorizontal="10sp"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/category_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5pt"
+                android:text="@string/transaction_label_category"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="20sp"
+                android:layout_marginBottom="10dp" />
+
+            <Spinner
+                android:id="@+id/category_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="48dp"
+                android:minHeight="48dp"
+                android:scrollHorizontally="true"
+                android:background="@color/gray"
+                android:entries="@array/category_choices" />
+
+            <TextView
+                android:id="@+id/location_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5pt"
+                android:text="@string/transaction_label_location"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="20sp"
+                android:layout_marginBottom="10dp" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/location_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:paddingHorizontal="0dp"
+                    android:text="@string/no_location_data"
+                    android:textColor="?android:textColorPrimary"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/btnLocate"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/btnLocate"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:adjustViewBounds="true"
+                    android:backgroundTint="@color/purple_500"
+                    android:contentDescription="@string/get_latest_location"
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="10dp"
+                    android:scaleType="centerInside"
+                    app:layout_constraintBottom_toBottomOf="@+id/location_text"
+                    app:layout_constraintEnd_toStartOf="@+id/btnDelete"
+                    app:layout_constraintTop_toTopOf="@+id/location_text"
+                    app:srcCompat="@drawable/ic_hub_location"
+                    app:tint="@color/white" />
+
+                <ImageButton
+                    android:id="@+id/btnDelete"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:adjustViewBounds="true"
+                    android:backgroundTint="@color/red"
+                    android:contentDescription="@string/delete_location"
+                    android:paddingHorizontal="5dp"
+                    android:paddingVertical="10dp"
+                    android:scaleType="centerInside"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnLocate"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/btnLocate"
+                    app:srcCompat="@drawable/ic_trash"
+                    app:tint="@color/white" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <Button
+                android:id="@+id/submit_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10pt"
+                android:layout_marginBottom="60dp"
+                android:text="@string/transaction_label_submit" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
