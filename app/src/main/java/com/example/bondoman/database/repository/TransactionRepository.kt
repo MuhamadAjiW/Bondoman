@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import com.example.bondoman.api.RetrofitClient
 import com.example.bondoman.database.dao.TransactionDao
 import com.example.bondoman.database.entity.TransactionEntity
+import com.example.bondoman.types.util.Logger
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.text.SimpleDateFormat
@@ -38,11 +39,9 @@ class TransactionRepository(private val transactionDao: TransactionDao) {
         transactionDao.deleteAll()
     }
 
-    suspend fun postUploadNota(imageReqBody: RequestBody): List<TransactionEntity> {
+    suspend fun postUploadNota(imageReqBody: RequestBody, token: String): List<TransactionEntity> {
         try {
-            // TODO: Get stored auth token
-            val authToken =
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuaW0iOiIxMzUyMTE0OSIsImlhdCI6MTcxMTkxOTI3NCwiZXhwIjoxNzExOTE5NTc0fQ.eek7Uf1vXidl8J7ns04K3lBRGlqCjtIxwZvhPVzT6cE"
+            val authToken = "Bearer $token"
             val response = RetrofitClient.uploadInstance.uploadImage(
                 MultipartBody.Part.createFormData(
                     "file", "test", imageReqBody
@@ -50,7 +49,7 @@ class TransactionRepository(private val transactionDao: TransactionDao) {
             )
 
             if (!response.isSuccessful) {
-                Log.d(TAG, response.code().toString())
+                Logger.log(TAG, response.code().toString())
                 return emptyList()
             }
 

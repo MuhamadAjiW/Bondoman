@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.bondoman.database.entity.TransactionEntity
 import com.example.bondoman.databinding.ItemTransactionBinding
+import com.example.bondoman.types.util.Logger
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -23,7 +24,7 @@ class ScanAdapter(private val context: Context, private val tsList: List<Transac
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        Log.d("ScanAdapter", "masuk 2")
+        Logger.log("ScanAdapter", "masuk 2")
         binding = ItemTransactionBinding.inflate(LayoutInflater.from(context), parent, false)
         return ViewHolder(binding)
     }
@@ -48,7 +49,7 @@ class ScanAdapter(private val context: Context, private val tsList: List<Transac
     }
 
     override fun getItemCount(): Int {
-        Log.d("ScanAdapter", tsList.size.toString())
+        Logger.log("ScanAdapter", tsList.size.toString())
         return tsList.size
     }
 }

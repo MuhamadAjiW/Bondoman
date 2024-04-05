@@ -15,4 +15,12 @@ object RetrofitClient {
     val uploadInstance: UploadRequest by lazy {
         retrofit.create(UploadRequest::class.java)
     }
+
+    val loginInstance: LoginRequest by lazy {
+        retrofit.create(LoginRequest::class.java)
+    }
+
+    val authInstance: AuthRequest by lazy {
+        retrofit.create(AuthRequest::class.java)
+    }
 }
