@@ -29,6 +29,7 @@ import com.example.bondoman.R
 import com.example.bondoman.database.AppDatabase
 import com.example.bondoman.database.repository.TransactionRepository
 import com.example.bondoman.databinding.FragmentScanBinding
+import com.example.bondoman.services.SessionManager
 import com.example.bondoman.viewmodel.scan.ScanViewModel
 import com.example.bondoman.viewmodel.scan.ScanViewModelFactory
 import okhttp3.MediaType
@@ -45,6 +46,7 @@ class ScanFragment : Fragment() {
     private var imageCapture: ImageCapture? = null
     private lateinit var cameraExecutor: ExecutorService
 
+    private lateinit var sessionManager: SessionManager
     private val scanDialog: ScanDialogFragment = ScanDialogFragment()
 
     private val activityResultLauncher = registerForActivityResult(
@@ -96,6 +98,7 @@ class ScanFragment : Fragment() {
         binding.selectPhotoButton.setOnClickListener(::onSelectPhotoClick)
 
         cameraExecutor = Executors.newSingleThreadExecutor()
+        sessionManager = SessionManager(requireActivity())
 
         return binding.root
     }
@@ -187,18 +190,24 @@ class ScanFragment : Fragment() {
         val byteArray = stream.toByteArray()
 
         val imageReqBody = RequestBody.create(MediaType.parse("image/*"), byteArray)
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            val scannedTransactions = scanViewModel.uploadNota(imageReqBody)
+        val token = sessionManager.getToken()
 
-            if (scannedTransactions.isNotEmpty()) {
-                scanDialog.scannedTransactions.value = scannedTransactions
-                scanDialog.show(parentFragmentManager, "scan")
-            } else {
-                Toast.makeText(
-                    requireActivity(), getString(R.string.scan_add_toast_failed), Toast.LENGTH_SHORT
-                ).show()
+        token?.let{
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                val scannedTransactions = scanViewModel.uploadNota(imageReqBody, token)
+
+                if (scannedTransactions.isNotEmpty()) {
+                    scanDialog.scannedTransactions.value = scannedTransactions
+                    scanDialog.show(parentFragmentManager, "scan")
+                } else {
+                    Toast.makeText(
+                        requireActivity(), getString(R.string.scan_add_toast_failed), Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
+
+        // TODO: if token null?
     }
 
     private fun onSelectPhotoClick(view: View) {

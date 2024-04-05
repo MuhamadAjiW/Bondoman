@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="16dp"
-        android:text="TextView"
+        android:text="@string/date"
         app:layout_constraintEnd_toStartOf="@+id/tvCategory"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +36,7 @@
         android:id="@+id/tvCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="@string/category"
         app:layout_constraintBottom_toBottomOf="@+id/tvDate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -48,7 +48,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="TextView"
+        android:text="@string/title"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -59,7 +59,7 @@
         android:id="@+id/btnEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit"
+        android:text="@string/edit"
         app:layout_constraintBottom_toBottomOf="@+id/btnDelete"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btnDelete" />
@@ -69,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="10dp"
-        android:text="View Location"
+        android:text="@string/view_location"
         app:layout_constraintBottom_toBottomOf="@+id/btnDelete"
         app:layout_constraintEnd_toStartOf="@+id/btnEdit"
         app:layout_constraintTop_toTopOf="@+id/btnDelete" />
@@ -81,7 +81,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/red"
-        android:text="Delete"
+        android:text="@string/delete"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvAmount" />
@@ -92,11 +92,10 @@
         android:layout_height="23dp"
         android:layout_marginEnd="8dp"
         android:alpha="0.6"
-        android:contentDescription="location icon"
+        android:contentDescription="@string/location_icon"
         app:layout_constraintBottom_toBottomOf="@+id/tvAmount"
         app:layout_constraintEnd_toStartOf="@+id/tvLocation"
         app:layout_constraintTop_toTopOf="@+id/tvAmount"
-        android:tint="?android:textColorPrimary"
         app:srcCompat="@drawable/ic_hub_location" />
 
     <TextView
@@ -105,18 +104,21 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="16dp"
-        android:text="TextView"
+        android:text="@string/amount"
         app:layout_constraintEnd_toStartOf="@+id/locationIcon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
     <TextView
         android:id="@+id/tvLocation"
-        android:layout_width="60dp"
+        android:maxWidth="60dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        android:text="TextView"
+        android:text="@string/location"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
         app:layout_constraintBottom_toBottomOf="@+id/locationIcon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/locationIcon" />

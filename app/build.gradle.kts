@@ -80,4 +80,5 @@ dependencies {
     implementation("com.google.android.libraries.places:places:2.5.0")
 
     implementation("net.datafaker:datafaker:1.9.0")
+    implementation("androidx.security:security-crypto:1.1.0-alpha03")
 }

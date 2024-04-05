@@ -24,27 +24,43 @@ Dalam aplikasi ini, pengguna dapat melakukan hal-hal berikut.
 - Android Core
 - Room
 - Retrofit
-- ?
+- Fused Location Client
+- Recycler View
+- Data Faker
+- dll.
+
 
 ## Screenshot Aplikasi
 
 ### Splash Screen
+![alt text](image.png)
 
 ### Login
+![alt text](image-1.png)
 
 ### Transaksi
+![alt text](image-2.png)
 
 ### Tambah Transaksi
+![alt text](image-3.png)
 
 ### Scan Nota
+![alt text](image-4.png)
+
+![alt text](image-7.png)
 
 ### Graf
 
 #### Potrait
 
+![alt text](image-5.png)
+
 #### Landscape
 
+![alt text](image-6.png)
+
 ### Twibbon
+![alt text](image-8.png)
 
 ## Bonus
 
@@ -143,7 +159,7 @@ Lihat pada bagian [Twibbon](#twibbon).
 | Intent GMail - Halaman Pengaturan                                        | 13521095                     |
 | Background Service - Mengecek expiry JWT                                 | 13521129                     |
 | Network Sensing - Deteksi Sinyal                                         | 13521149                     |
-| Broadcast Receiver - Randomize Transaksi dari Pengaturan                 | ?                            |
+| Broadcast Receiver - Randomize Transaksi dari Pengaturan                 | 13521095, 13521129           |
 | Bonus: Twibbon                                                           | 13521149                     |
 | Bonus: OWASP                                                             | 13521095, 13521129, 13521149 |
 | Bonus: Accessibility Testing                                             | 13521095, 13521129, 13521149 |
@@ -152,9 +168,9 @@ Lihat pada bagian [Twibbon](#twibbon).
 
 | NIM      | Durasi Persiapan (jam) | Durasi Pengerjaan (jam) |
 | -------- | ---------------------- | ----------------------- |
-| 13521095 | ?                      | ?                       |
-| 13521129 | ?                      | ?                       |
-| 13521149 | ?                      | ?                       |
+| 13521095 | 24                     | 48                      |
+| 13521129 | 24                     | 48                      |
+| 13521149 | 24                     | 48                      |
 
 ## Authors
 
