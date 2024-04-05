@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.bondoman.api.RetrofitClient
 import com.example.bondoman.models.Credential
 import kotlinx.coroutines.launch
-import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 class LoginViewModel: ViewModel() {

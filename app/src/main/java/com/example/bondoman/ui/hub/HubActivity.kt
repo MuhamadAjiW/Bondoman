@@ -6,13 +6,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.bondoman.BondomanApp
@@ -95,6 +93,10 @@ class HubActivity : AppCompatActivity() {
             it?.let{
                 if (!it) {
                     Logger.log("HUB ACTIVITY: AUTH", "View model unauthorized")
+
+                    val authService = Intent(this, AuthService::class.java)
+                    stopService(authService)
+
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
                     finish()
@@ -115,12 +117,20 @@ class HubActivity : AppCompatActivity() {
         super.onResume()
         val token = sessionManager.getToken()
         Logger.log("HUB ACTIVITY: AUTH", "View model validate token")
-        authViewModel.validate(token, true)
+
+        authViewModel.validate(token, false)
 
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(
                 broadcastReceiver,
                 IntentFilter(BondomanApp.ACTION_UNAUTHORIZED))
+
+        if (!AuthService.IS_ACTIVE) {
+            Logger.log("HUB ACTIVITY: AUTH", "Service is inactive, starting...")
+            startService(Intent(this, AuthService::class.java))
+        } else {
+            Logger.log("HUB ACTIVITY: AUTH", "Service is already active")
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -152,6 +162,9 @@ class HubActivity : AppCompatActivity() {
             "Session expired",
             Toast.LENGTH_SHORT
         ).show()
+
+        val authService = Intent(this, AuthService::class.java)
+        stopService(authService)
 
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)

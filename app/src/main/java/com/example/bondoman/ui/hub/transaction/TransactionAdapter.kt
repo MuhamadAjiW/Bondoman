@@ -45,7 +45,7 @@ class TransactionAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.view.apply {
-            tvDate.text = tsList[position].timestamp.split(" ")[0]
+            tvDate.text = tsList[position].timestamp
             tvCategory.text = tsList[position].category
             tvTitle.text = tsList[position].title
 

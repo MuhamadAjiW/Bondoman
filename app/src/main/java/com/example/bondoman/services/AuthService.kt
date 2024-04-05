@@ -8,8 +8,6 @@ import android.os.IBinder
 import android.os.Looper
 import android.os.Message
 import android.os.Process
-import android.util.Log
-import android.widget.Toast
 //import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.bondoman.BondomanApp
@@ -19,7 +17,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class AuthService : Service() {
@@ -29,6 +26,10 @@ class AuthService : Service() {
     private lateinit var sessionManager: SessionManager
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
+    companion object {
+        var IS_ACTIVE = false
+    }
+
     private inner class ServiceHandler(looper: Looper) : Handler(looper) {
         override fun handleMessage(msg: Message) {
             coroutineScope.launch {
@@ -36,7 +37,7 @@ class AuthService : Service() {
                     val token = sessionManager.getToken()
 
                     if (token == null) {
-                        Logger.log("AUTH SERVICE", "From service ${msg.arg1} thread ${Thread.currentThread()}: No token found")
+                        Logger.log("AUTH SERVICE", "From thread ${Thread.currentThread()}: No token found")
                         Logger.log("AUTH SERVICE", "Stopping service !!!")
                         stopSelf()
                     }
@@ -45,7 +46,7 @@ class AuthService : Service() {
                         val response = RetrofitClient.authInstance.authToken("Bearer $token")
 
                         if (response.code() == 200) {
-                            Logger.log("AUTH SERVICE", "From service ${msg.arg1} thread ${Thread.currentThread()}: Token authorized")
+                            Logger.log("AUTH SERVICE", "From thread ${Thread.currentThread()}: Token authorized")
                         } else if (response.code() == 401) {
                             sessionManager.clearToken()
 
@@ -53,7 +54,7 @@ class AuthService : Service() {
                             LocalBroadcastManager.getInstance(applicationContext)
                                 .sendBroadcast(intent)
 
-                            Logger.log("AUTH SERVICE", "From service ${msg.arg1} thread ${Thread.currentThread()}: Token unauthorized. Removed from session.")
+                            Logger.log("AUTH SERVICE", "From thread ${Thread.currentThread()}: Token unauthorized. Removed from session.")
                             Logger.log("AUTH SERVICE", "Stopping service !!!")
                             stopSelf()
                         } // ELSE: internal server error, retry later
@@ -71,6 +72,7 @@ class AuthService : Service() {
     override fun onCreate() {
         Logger.log("AUTH SERVICE", "Service started")
         sessionManager = SessionManager(applicationContext)
+        IS_ACTIVE = true
 
         HandlerThread("ServiceStartArguments", Process.THREAD_PRIORITY_BACKGROUND).apply {
             start()
@@ -94,12 +96,13 @@ class AuthService : Service() {
 
     override fun onTaskRemoved(rootIntent: Intent?) {
         super.onTaskRemoved(rootIntent)
-        Logger.log("AUTH SERVICE", "onTaskRemoved")
+        Logger.log("AUTH SERVICE", "onTaskRemoved called")
         stopSelf()
     }
 
     override fun onDestroy() {
         Logger.log("AUTH SERVICE", "Service destroyed")
+        IS_ACTIVE = false
         coroutineScope.cancel()
         super.onDestroy()
     }

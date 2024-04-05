@@ -24,6 +24,7 @@ import com.example.bondoman.database.AppDatabase
 import com.example.bondoman.database.entity.TransactionEntity
 import com.example.bondoman.database.repository.TransactionRepository
 import com.example.bondoman.databinding.ActivityTransactionBinding
+import com.example.bondoman.services.AuthService
 import com.example.bondoman.services.SessionManager
 import com.example.bondoman.types.util.Logger
 import com.example.bondoman.ui.login.LoginActivity
@@ -145,6 +146,10 @@ class TransactionActivity : AppCompatActivity() {
             it?.let{
                 if (!it) {
                     Logger.log("TRANSACTION ACTIVITY: AUTH", "View model unauthorized")
+
+                    val authService = Intent(this, AuthService::class.java)
+                    stopService(authService)
+
                     val intent = Intent(this, LoginActivity::class.java)
                     startActivity(intent)
                     finish()
@@ -296,13 +301,20 @@ class TransactionActivity : AppCompatActivity() {
         super.onResume()
         val token = sessionManager.getToken()
         Logger.log("TRANSACTION ACTIVITY: AUTH", "View model validate token")
-        authViewModel.validate(token, true)
+        authViewModel.validate(token, false)
 
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(
                 broadcastReceiver,
                 IntentFilter(BondomanApp.ACTION_UNAUTHORIZED)
             )
+
+        if (!AuthService.IS_ACTIVE) {
+            Logger.log("TRANSACTION ACTIVITY: AUTH", "Service is inactive, starting...")
+            startService(Intent(this, AuthService::class.java))
+        } else {
+            Logger.log("TRANSACTION ACTIVITY: AUTH", "Service is already active")
+        }
     }
 
     override fun onPause() {
@@ -316,6 +328,9 @@ class TransactionActivity : AppCompatActivity() {
             "Session expired",
             Toast.LENGTH_SHORT
         ).show()
+
+        val authService = Intent(this, AuthService::class.java)
+        stopService(authService)
 
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)

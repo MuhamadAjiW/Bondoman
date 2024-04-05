@@ -13,7 +13,7 @@ import java.net.UnknownHostException
 class AuthViewModel: ViewModel() {
     val isAuthorized = MutableLiveData<Boolean?>(null)
     val errMessage = MutableLiveData("")
-    val isConnectionTimeout = MutableLiveData<Boolean>(false)
+    val isConnectionTimeout = MutableLiveData(false)
     val removeToken = MutableLiveData(false)
 
     fun validate(token: String?, isDelay: Boolean) {

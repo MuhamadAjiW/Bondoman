@@ -26,12 +26,6 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var sessionManager: SessionManager
     private lateinit var loginViewModel: LoginViewModel
 
-    private var broadcastReceiver = object: BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            navigateToHub()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?){
         super.onCreate(savedInstanceState)
 
@@ -60,15 +54,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(
-                broadcastReceiver,
-                IntentFilter(BondomanApp.ACTION_AUTHORIZED)
-            )
-    }
-
     private fun onLoginClick(view: View) {
         val email = binding.emailLabel.text.toString()
         val password = binding.passwordInput.text.toString()
@@ -89,16 +74,9 @@ class LoginActivity : AppCompatActivity() {
 
     private fun navigateToHub() {
         Logger.log("LOGIN ACTIVITY: AUTH", "View model authorized")
-        // start service
-        startService(Intent(this, AuthService::class.java))
 
         val intent = Intent(this, HubActivity::class.java)
         startActivity(intent)
         finish()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
     }
 }
