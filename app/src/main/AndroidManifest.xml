@@ -34,7 +34,8 @@
         <activity android:name=".ui.login.LoginActivity"/>
         <activity android:name=".ui.transaction.TransactionActivity"/>
 
-    <provider
+
+        <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
             android:exported="false"
@@ -43,6 +44,14 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
+        <receiver
+            android:name=".RandomBroadcastReceiver"
+            android:exported="true">
+            <intent-filter>
+                <category android:name="com.example.bondoman.ACTION_RANDOM_TRANSACTION"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 </manifest>
