@@ -36,20 +36,28 @@ Dalam aplikasi ini, pengguna dapat melakukan hal-hal berikut.
 ![alt text](image.png)
 
 ### Login
+![alt text](image-1.png)
 
 ### Transaksi
+![alt text](image-2.png)
+![alt text](image-6.png)
 
 ### Tambah Transaksi
+![alt text](image-3.png)
 
 ### Scan Nota
+![alt text](image-4.png)
 
 ### Graf
 
 #### Potrait
+![alt text](image-5.png)
 
 #### Landscape
+![alt text](image-6.png)
 
 ### Twibbon
+![alt text](image-6.png)
 
 ## Bonus
 
