@@ -129,9 +129,9 @@ class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
                 // Prep email
                 // TODO: set email recipient as the logged in account
                 val emailRecipient = arrayOf("13521095@std.stei.itb.ac.id")
-//                val emailIntent = Intent(Intent.ACTION_SENDTO,  Uri.fromParts("mailto",emailRecipient, null))
                 val emailIntent = Intent(Intent.ACTION_SEND)
                 emailIntent.type = "text/plain"
+                emailIntent.`package` = "com.google.android.gm"
                 emailIntent.putExtra(Intent.EXTRA_EMAIL, emailRecipient)
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.email_subject))
                 emailIntent.putExtra(Intent.EXTRA_TEXT, "${getString(R.string.email_text)} ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())}")
