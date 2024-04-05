@@ -59,8 +59,11 @@ Dalam aplikasi ini, pengguna dapat melakukan hal-hal berikut.
 
 ![alt text](image-6.png)
 
-### Twibbon
+### Settings
 ![alt text](image-8.png)
+
+### Twibbon
+![alt text](screenshots/settings-ss.png)
 
 ## Bonus
 
@@ -68,81 +71,62 @@ Dalam aplikasi ini, pengguna dapat melakukan hal-hal berikut.
 
 Lihat pada bagian [Twibbon](#twibbon).
 
-### OWASP
-
-#### M4: Insufficient Input/Output Validation
-
-#### M8: Security Misconfiguration
-
-#### M9: Insecure Data Storage
-
 ### Accessibility Testing
-
-#### Splash Screen
-
-##### Suggestion sebelum Diperbaiki
-
-##### Perbaikan yang Dilakukan
-
-##### Suggestion setelah Diperbaiki
 
 #### Login
 
 ##### Suggestion sebelum Diperbaiki
+![alt text](screenshots/login.png)
 
 ##### Perbaikan yang Dilakukan
-
+- Mengubah layout tengah menjadi match_parent lalu menambahkan padding horizontal
+- Mengubah width height EditText password menjadi wrap_content namun memberikan atribut maxHeight dan scrollHorizontally true
 ##### Suggestion setelah Diperbaiki
-
+![alt text](screenshots/login_after.png)
 #### Transaksi
 
 ##### Suggestion sebelum Diperbaiki
-
+![alt text](screenshots/transaction.png)
 ##### Perbaikan yang Dilakukan
-
+- Menambah id pada contentDescription yang sama
 ##### Suggestion setelah Diperbaiki
-
+![alt text](screenshots/transaction_after.png)
 #### Tambah Transaksi
 
 ##### Suggestion sebelum Diperbaiki
-
+![alt text](screenshots/add_transaction.png)
 ##### Perbaikan yang Dilakukan
-
+- Mengubah width height EditText dan Spinner menjadi wrap_content namun memberikan atribut maxHeight dan scrollHorizontally true
 ##### Suggestion setelah Diperbaiki
+![alt text](screenshots/add_transaction_after.png)
 
 #### Scan Nota
 
 ##### Suggestion sebelum Diperbaiki
-
+![alt text](screenshots/scan.png)
 ##### Perbaikan yang Dilakukan
-
+- Menambah contentDescription pada header
+- Mengubah width height Button menjadi wrap_content namun memberikan atribut maxHeight dan maxWidth
 ##### Suggestion setelah Diperbaiki
+![alt text](screenshots/scan_after.png)
 
 #### Graf
 
-##### Potrait
+##### Suggestion sebelum Diperbaiki
+![alt text](screenshots/stats.png)
+##### Perbaikan yang Dilakukan
+- Menambah contentDescription pada header
+##### Suggestion setelah Diperbaiki
+![alt text](screenshots/stats_after.png)
 
-###### Suggestion sebelum Diperbaiki
-
-###### Perbaikan yang Dilakukan
-
-###### Suggestion setelah Diperbaiki
-
-##### Landscape
-
-###### Suggestion sebelum Diperbaiki
-
-###### Perbaikan yang Dilakukan
-
-###### Suggestion setelah Diperbaiki
-
-#### Twibbon
+#### Settings
 
 ##### Suggestion sebelum Diperbaiki
-
+![alt text](screenshots/settings.png)
 ##### Perbaikan yang Dilakukan
-
+- Menambah contentDescription pada header
 ##### Suggestion setelah Diperbaiki
+![alt text](screenshots/settings_after.png)
 
 ## Pembagian Kerja
 
@@ -161,7 +145,6 @@ Lihat pada bagian [Twibbon](#twibbon).
 | Network Sensing - Deteksi Sinyal                                         | 13521149                     |
 | Broadcast Receiver - Randomize Transaksi dari Pengaturan                 | 13521095, 13521129           |
 | Bonus: Twibbon                                                           | 13521149                     |
-| Bonus: OWASP                                                             | 13521095, 13521129, 13521149 |
 | Bonus: Accessibility Testing                                             | 13521095, 13521129, 13521149 |
 
 ## Durasi Persiapan dan Pengerjaan
