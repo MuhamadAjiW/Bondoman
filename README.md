@@ -33,6 +33,7 @@ Dalam aplikasi ini, pengguna dapat melakukan hal-hal berikut.
 ## Screenshot Aplikasi
 
 ### Splash Screen
+![alt text](image.png)
 
 ### Login
 
