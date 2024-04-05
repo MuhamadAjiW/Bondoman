@@ -13,10 +13,9 @@ class BondomanApp : Application() {
         AppDatabase.getInstance(this)
 
         val filter = IntentFilter(ACTION_RANDOM_TRANSACTION)
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(randomReceiver, filter, RECEIVER_NOT_EXPORTED)
-        } else {
+            registerReceiver(randomReceiver, filter, RECEIVER_EXPORTED)
+        } else{
             registerReceiver(randomReceiver, filter)
         }
     }
