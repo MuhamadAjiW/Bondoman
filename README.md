@@ -59,10 +59,10 @@ Dalam aplikasi ini, pengguna dapat melakukan hal-hal berikut.
 
 ![alt text](image-6.png)
 
-### Settings
+### Twibbon
 ![alt text](image-8.png)
 
-### Twibbon
+### Settings
 ![alt text](screenshots/settings-ss.png)
 
 ## Bonus
