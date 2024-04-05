@@ -145,7 +145,6 @@ Lihat pada bagian [Twibbon](#twibbon).
 | Network Sensing - Deteksi Sinyal                                         | 13521149                     |
 | Broadcast Receiver - Randomize Transaksi dari Pengaturan                 | 13521095, 13521129           |
 | Bonus: Twibbon                                                           | 13521149                     |
-| Bonus: OWASP                                                             | 13521095, 13521129, 13521149 |
 | Bonus: Accessibility Testing                                             | 13521095, 13521129, 13521149 |
 
 ## Durasi Persiapan dan Pengerjaan
