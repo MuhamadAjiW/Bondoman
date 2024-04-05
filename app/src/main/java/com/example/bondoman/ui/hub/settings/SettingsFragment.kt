@@ -72,6 +72,7 @@ class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             val header = requireActivity().findViewById<TextView>(R.id.nav_title)
             header.text = getString(R.string.hub_nav_settings)
+            header.contentDescription = "Settings header"
         }
     }
 
@@ -127,8 +128,8 @@ class SettingsFragment : Fragment(), ExcelDialogFragment.ExcelDialogListener {
                 )
 
                 // Prep email
-                // TODO: set email recipient as the logged in account
-                val emailRecipient = arrayOf("13521095@std.stei.itb.ac.id")
+                val emailRecipient = arrayOf(sessionManager.getEmail().toString())
+//                val emailIntent = Intent(Intent.ACTION_SENDTO,  Uri.fromParts("mailto",emailRecipient, null))
                 val emailIntent = Intent(Intent.ACTION_SEND)
                 emailIntent.type = "text/plain"
                 emailIntent.`package` = "com.google.android.gm"

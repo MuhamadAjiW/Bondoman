@@ -23,11 +23,13 @@ class SessionManager (val context: Context) {
 
     companion object {
         const val AUTH_TOKEN = "auth_token"
+        const val EMAIL = "email"
     }
 
-    fun saveToken(token: String) {
+    fun saveToken(token: String, email: String) {
         val sharedPrefEditor = sharedPref.edit()
         sharedPrefEditor.putString(AUTH_TOKEN, token)
+        sharedPrefEditor.putString(EMAIL, email)
         sharedPrefEditor.apply()
     }
 
@@ -35,9 +37,14 @@ class SessionManager (val context: Context) {
         return sharedPref.getString(AUTH_TOKEN, null)
     }
 
+    fun getEmail(): String? {
+        return sharedPref.getString(EMAIL, null)
+    }
+
     fun clearToken() {
         val sharedPrefEditor = sharedPref.edit()
         sharedPrefEditor.remove(AUTH_TOKEN)
+        sharedPrefEditor.remove(EMAIL)
         sharedPrefEditor.apply()
     }
 }

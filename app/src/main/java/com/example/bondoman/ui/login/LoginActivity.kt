@@ -42,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
 
         loginViewModel.loginToken.observe(this) {
             if (it != null) {
-                sessionManager.saveToken(it)
+                sessionManager.saveToken(it, binding.emailLabel.text.toString())
                 navigateToHub()
             }
         }
